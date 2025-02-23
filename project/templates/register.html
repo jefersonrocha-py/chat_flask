@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Fundo com Partículas -->
+<div id="particles-js"></div>
+
+<!-- Container do Registro -->
+<div class="register-container">
+    <h1 class="neon-text">📝 Registrar-se</h1>
+    <form method="POST" action="{{ url_for('register') }}">
+        <!-- Nome Completo -->
+        <label for="full_name">Nome Completo:</label>
+        <input type="text" id="full_name" name="full_name" placeholder="Ex: João Silva" required>
+
+        <!-- E-mail -->
+        <label for="email">E-mail:</label>
+        <input type="email" id="email" name="email" placeholder="joao.silva@empresa.com" required>
+
+        <!-- Organização -->
+        <label for="organization">Organização:</label>
+        <input type="text" id="organization" name="organization" placeholder="Empresa Ltda" required>
+
+        <!-- Usuário -->
+        <label for="username">Usuário:</label>
+        <input type="text" id="username" name="username" placeholder="joaosilva2024" required>
+
+        <!-- Senha -->
+        <label for="password">Senha:</label>
+        <input type="password" id="password" name="password" placeholder="••••••••" required>
+
+        <!-- Confirmar Senha -->
+        <label for="confirm_password">Confirmar Senha:</label>
+        <input type="password" id="confirm_password" name="confirm_password" placeholder="••••••••" required>
+
+        <!-- Botão de Registro -->
+        <button type="submit" class="cli-button">
+            <i class="fas fa-robot"></i> Registrar 🚀
+        </button>
+    </form>
+    <a href="{{ url_for('login') }}" class="back-to-login">Voltar ao Login</a>
+</div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+<script>
+    // Carrega as partículas com a configuração
+    particlesJS.load('particles-js', '{{ url_for("static", filename="particles-config.json") }}', function() {
+        console.log('Partículas carregadas com sucesso!');
+    });
+</script>
+{% endblock %}

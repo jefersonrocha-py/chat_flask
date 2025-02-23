@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Fundo com Partículas -->
+<div id="particles-js"></div>
+
+<!-- Container do Login -->
+<div class="login-container">
+    <h1 class="neon-text">🤖 FlowMind AI</h1>
+    <p>Bem-vindo ao seu Assistente Virtual</p>
+    <form method="POST" action="{{ url_for('login') }}">
+        <label for="username">Usuário:</label>
+        <input type="text" id="username" name="username" required>
+        <label for="password">Senha:</label>
+        <input type="password" id="password" name="password" required>
+        <button type="submit">Entrar 🚀</button>
+    </form>
+    <a href="{{ url_for('register') }}">Registrar-se</a>
+</div>
+
+<!-- Rodapé -->
+<footer class="footer">
+    <div class="footer-content">
+        <!-- Logo à Esquerda -->
+        <div class="footer-left">
+            <img src="https://etheriumtech.com.br/wp-content/uploads/2024/04/LOGO-BRANCO.png" alt="EtheriumTech Logo" class="footer-logo">
+        </div>
+        <!-- Texto Centralizado -->
+        <div class="footer-center">
+            <p class="footer-text neon-text">FlowMind AI  © todos os direitos reservados 2025</p>
+        </div>
+        <!-- Ícones à Direita -->
+        <div class="footer-right">
+            <a href="https://www.linkedin.com/company/etheriumtech/" target="_blank" aria-label="LinkedIn">
+                <i class="fab fa-linkedin"></i>
+            </a>
+            <a href="https://www.instagram.com/etheriumtech/" target="_blank" aria-label="Instagram">
+                <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://etheriumtech.com.br" target="_blank" aria-label="Website">
+                <i class="fas fa-globe"></i>
+            </a>
+        </div>
+    </div>
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+<script>
+    // Carrega as partículas com a configuração
+    particlesJS.load('particles-js', '{{ url_for("static", filename="particles-config.json") }}', function() {
+        console.log('Partículas carregadas com sucesso!');
+    });
+</script>
+{% endblock %}

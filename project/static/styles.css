@@ -1,0 +1,836 @@
+/* Estilos Página de Login */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #0e1525; /* Fundo escuro para um visual futurista */
+    color: white;
+    overflow: hidden; /* Evita a barra de rolagem quando as partículas estiverem em movimento */
+}
+
+/* Fundo com Partículas */
+#particles-js {
+    position: fixed; /* Fixa o fundo no lugar */
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: -1; /* Garante que o fundo fique atrás de outros elementos */
+}
+
+/* Efeito Neon */
+.neon-text {
+    color: #ffffff;
+    text-shadow:
+        0 0 5px #00ff99,
+        0 0 10px #00ff99,
+        0 0 20px #00ff99,
+        0 0 40px #00ff99,
+        0 0 80px #00ff99;
+    animation: neon-glow 1.5s infinite alternate;
+}
+
+@keyframes neon-glow {
+    from {
+        text-shadow:
+            0 0 5px #00ff99,
+            0 0 10px #00ff99,
+            0 0 20px #00ff99,
+            0 0 40px #00ff99,
+            0 0 80px #00ff99;
+    }
+    to {
+        text-shadow:
+            0 0 10px #00ff99,
+            0 0 20px #00ff99,
+            0 0 30px #00ff99,
+            0 0 50px #00ff99,
+            0 0 100px #00ff99;
+    }
+}
+
+/* Container do Login */
+.login-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    background: rgba(255, 255, 255, 0.1); /* Fundo translúcido */
+    padding: 2rem;
+    border-radius: 50px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Sombra suave */
+    backdrop-filter: blur(10px); /* Efeito de desfoque no fundo */
+    z-index: 1; /* Garante que o formulário fique acima do fundo */
+    width: 920px;
+    max-width: 580px; /* Largura máxima para responsividade */
+}
+
+/* Título da Página */
+.login-container h1 {
+    font-size: 3.0rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Subtítulo */
+.login-container p {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #d3d3d3; /* Cinza claro para um visual limpo */
+}
+
+/* Inputs de Formulário */
+.login-container input {
+    width: 100%;
+    padding: 0.5rem;
+    margin: 0.5rem 0;
+    border: none;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.2); /* Fundo translúcido */
+    color: white; /* Texto branco */
+    font-size: 1rem;
+}
+
+/* Placeholder dos Inputs */
+.login-container input::placeholder {
+    color: #cccccc; /* Placeholder mais claro */
+}
+
+/* Botão de Envio */
+.login-container button {
+    width: 150px;
+    padding: 0.9rem;
+    margin-top: 0.1rem;
+    border: none;
+    border-radius: 50px;
+    background: #02933a; /* Azul vibrante */
+    color: rgb(8, 1, 1);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease; /* Transição suave ao passar o mouse */
+}
+
+/* Hover no Botão */
+.login-container button:hover {
+    background: #62d891; /* Azul mais escuro ao passar o mouse */
+}
+
+/* Link de Registro */
+.login-container a {
+    display: block;
+    margin-top: 2rem;
+    color: #007bff; /* Mesmo azul do botão */
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s ease; /* Transição suave ao passar o mouse */
+}
+
+/* Hover no Link */
+.login-container a:hover {
+    text-decoration: underline;
+    color: #0056b3; /* Azul mais escuro ao passar o mouse */
+}
+
+/* Rodapé */
+.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fundo transparente */
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    z-index: 1; /* Garante que o rodapé fique acima das partículas */
+    flex-wrap: wrap; /* Permite que os itens quebrem em telas menores */
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.footer-left,
+.footer-center,
+.footer-right {
+    flex: 1; /* Divide o espaço igualmente */
+}
+
+.footer-left {
+    text-align: left; /* Alinha o logo à esquerda */
+}
+
+.footer-center {
+    text-align: center; /* Centraliza o texto "FlowMind AI" */
+}
+
+.footer-right {
+    text-align: right; /* Alinha os ícones à direita */
+}
+
+.footer-logo {
+    max-width: 180px; /* Ajuste o tamanho da logo conforme necessário */
+    height: auto;
+}
+
+.social-icons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center; /* Centraliza os ícones */
+}
+
+.social-icons a {
+    color: white;
+    font-size: 2.5rem;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.social-icons a:hover {
+    color: #00ff99; /* Verde neon ao passar o mouse */
+}
+
+.footer-text {
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+/* Responsividade para telas até 768px */
+@media (max-width: 768px) {
+    .footer {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 0.5rem;
+    }
+    .footer-content {
+        flex-direction: column;
+    }
+    .footer-left,
+    .footer-center,
+    .footer-right {
+        flex: none;
+        width: 100%;
+        margin: 0.3rem 0;
+    }
+    .footer-logo {
+        max-width: 150px;
+    }
+    .social-icons a {
+        font-size: 2rem;
+    }
+    .footer-text {
+        font-size: 1.5rem;
+    }
+}
+
+/* Ajustes adicionais para telas até 480px */
+@media (max-width: 480px) {
+    .footer {
+        padding: 0.8rem;
+    }
+    .social-icons a {
+        font-size: 1.4rem;
+    }
+    .footer-text {
+        font-size: 1.2rem;
+    }
+}
+
+
+}
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Fundo com Partículas -->
+<div id="particles-js"></div>
+
+<!-- Container do Registro -->
+<div class="register-container">
+    <h1 class="neon-text">📝 Registrar-se</h1>
+    <form method="POST" action="{{ url_for('register') }}">
+        <!-- Nome Completo -->
+        <label for="full_name">Nome Completo:</label>
+        <input type="text" id="full_name" name="full_name" placeholder="Ex: João Silva" required>
+
+        <!-- E-mail -->
+        <label for="email">E-mail:</label>
+        <input type="email" id="email" name="email" placeholder="joao.silva@empresa.com" required>
+
+        <!-- Organização -->
+        <label for="organization">Organização:</label>
+        <input type="text" id="organization" name="organization" placeholder="Empresa Ltda" required>
+
+        <!-- Usuário -->
+        <label for="username">Usuário:</label>
+        <input type="text" id="username" name="username" placeholder="joaosilva2024" required>
+
+        <!-- Senha -->
+        <label for="password">Senha:</label>
+        <input type="password" id="password" name="password" placeholder="••••••••" required>
+
+        <!-- Confirmar Senha -->
+        <label for="confirm_password">Confirmar Senha:</label>
+        <input type="password" id="confirm_password" name="confirm_password" placeholder="••••••••" required>
+
+        <!-- Botão de Registro -->
+        <button type="submit" class="cli-button">
+            <i class="fas fa-robot"></i> Registrar 🚀
+        </button>
+    </form>
+    <a href="{{ url_for('login') }}" class="back-to-login">Voltar ao Login</a>
+</div>
+
+
+<!-- Estilos Específicos para o Register -->
+<style>
+    /* Fundo com Partículas */
+    #particles-js {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: -1;
+    }
+
+    /* Container do Registro */
+    .register-container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        background: rgba(255, 255, 255, 0.1); /* Fundo translúcido */
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Sombra suave */
+        backdrop-filter: blur(10px); /* Efeito de desfoque no fundo */
+        z-index: 1; /* Garante que o formulário fique acima do fundo */
+        width: 100%;
+        max-width: 400px; /* Largura máxima para responsividade */
+    }
+
+    /* Título da Página */
+    .register-container h1 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Labels */
+    .register-container label {
+        font-size: 1rem;
+        color: #d3d3d3; /* Cinza claro para um visual limpo */
+        margin-top: 1rem;
+        display: block;
+    }
+
+    /* Inputs de Formulário */
+    .register-container input {
+        width: 100%;
+        padding: 0.5rem;
+        margin-top: 0.5rem;
+        border: none;
+        border-radius: 5px;
+        background: rgba(255, 255, 255, 0.2); /* Fundo translúcido */
+        color: white; /* Texto branco */
+        font-size: 1rem;
+    }
+
+    /* Placeholder dos Inputs */
+    .register-container input::placeholder {
+        color: #cccccc; /* Placeholder mais claro */
+    }
+
+    /* Botão de Registro em Formato CLI */
+    .cli-button {
+        width: 100%;
+        padding: 0.7rem;
+        margin-top: 1rem;
+        border: none;
+        border-radius: 5px;
+        background: #000; /* Fundo preto como um terminal CLI */
+        color: #00ff99; /* Verde neon para texto */
+        font-family: 'Courier New', monospace; /* Fonte de terminal */
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background 0.3s ease; /* Transição suave ao passar o mouse */
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cli-button i {
+        margin-right: 0.5rem;
+        font-size: 1.2rem;
+    }
+
+    .cli-button:hover {
+        background: #00ff99; /* Fundo verde neon ao passar o mouse */
+        color: #000; /* Texto preto ao passar o mouse */
+    }
+
+    .cli-button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 255, 153, 0.3); /* Overlay verde neon */
+        transition: left 0.5s ease;
+    }
+
+    .cli-button:hover::before {
+        left: 0;
+    }
+
+    /* Link para Voltar ao Login */
+    .register-container a.back-to-login {
+        display: block;
+        margin-top: 1rem;
+        color: #007bff; /* Mesmo azul do botão */
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: color 0.3s ease; /* Transição suave ao passar o mouse */
+    }
+
+    /* Hover no Link */
+    .register-container a.back-to-login:hover {
+        text-decoration: underline;
+        color: #0056b3; /* Azul mais escuro ao passar o mouse */
+    }
+</style>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+<script>
+    // Carrega as partículas com a configuração
+    particlesJS.load('particles-js', '{{ url_for("static", filename="particles-config.json") }}', function() {
+        console.log('Partículas carregadas com sucesso!');
+    });
+</script>
+{% endblock %}
+
+/* Estilo para a página de Modo de Seleção  */
+<style>
+    /* Fundo com Partículas */
+    #particles-js {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: -1;
+    }
+
+    /* Título Centralizado */
+    .centered-title {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    /* Efeito Neon no Título */
+    .neon-text {
+        color: #ffffff;
+        text-shadow:
+            0 0 5px #00ff99,
+            0 0 10px #00ff99,
+            0 0 20px #00ff99,
+            0 0 40px #00ff99,
+            0 0 80px #00ff99;
+        animation: neon-glow 1.5s infinite alternate;
+    }
+
+    @keyframes neon-glow {
+        from {
+            text-shadow:
+                0 0 5px #00ff99,
+                0 0 10px #00ff99,
+                0 0 20px #00ff99,
+                0 0 40px #00ff99,
+                0 0 80px #00ff99;
+        }
+        to {
+            text-shadow:
+                0 0 10px #00ff99,
+                0 0 20px #00ff99,
+                0 0 30px #00ff99,
+                0 0 50px #00ff99,
+                0 0 100px #00ff99;
+        }
+    }
+
+    /* Container dos Cards */
+    .modes-container {
+        display: flex;
+        justify-content: center;
+        align-items: stretch; /* Garante que os cards tenham a mesma altura */
+        gap: 2rem;
+        margin-top: 2rem;
+        flex-wrap: wrap; /* Para responsividade */
+    }
+
+    /* Estilo dos Cards */
+    /* Container para centralizar e justificar os cards */
+    .mode-card-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Colunas responsivas */
+        justify-content: center; /* Centraliza horizontalmente */
+        align-items: center; /* Centraliza verticalmente */
+        gap: 20px; /* Espaçamento entre os cards */
+        padding: 20px; /* Espaçamento interno para evitar que os cards toquem as bordas */
+        min-height: 100vh; /* Altura total da tela */
+    }
+
+    /* Estilo dos cards */
+    .mode-card {
+        background: rgba(255, 255, 255, 0.1); /* Fundo translúcido */
+        padding: 5.5rem;
+        border-radius: 60px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Sombra suave */
+        backdrop-filter: blur(10px); /* Efeito de desfoque no fundo */
+        width: 100%; /* Ocupa a largura disponível no grid */
+        max-width: 350px; /* Largura máxima para responsividade */
+        text-align: center;
+        transition: transform 0.3s ease; /* Efeito de hover */
+        margin: 0 auto; /* Centraliza o card dentro da célula do grid */
+    }
+
+    .mode-card:hover {
+        transform: scale(1.05); /* Aumenta o card ao passar o mouse */
+    }
+
+    /* Títulos dos Cards */
+    .mode-card h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        color: #00ff99; /* Verde neon */
+    }
+
+    .mode-card h3 i {
+        margin-right: 0.5rem;
+        font-size: 1.5rem;
+    }
+
+    /* Descrições dos Cards */
+    .mode-card p {
+        font-size: 1.1rem;
+        color: #d3d3d3; /* Cinza claro */
+        margin-bottom: 1rem;
+    }
+
+    /* Botões CLI */
+    .cli-button {
+        display: inline-block;
+        padding: 0.7rem 1.5rem;
+        background: #000; /* Fundo preto como um terminal CLI */
+        color: #00ff99; /* Verde neon para texto */
+        font-family: 'Courier New', monospace; /* Fonte de terminal */
+        font-size: 1rem;
+        width: 250px;
+        border: none;
+        border-radius: 100px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background 0.3s ease; /* Transição suave ao passar o mouse */
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cli-button i {
+        margin-right: 0.5rem;
+        font-size: 2.0rem;
+    }
+
+    .cli-button:hover {
+        background: #00ff99; /* Fundo verde neon ao passar o mouse */
+        color: #000; /* Texto preto ao passar o mouse */
+    }
+
+    .cli-button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 255, 153, 0.3); /* Overlay verde neon */
+        transition: left 0.5s ease;
+    }
+
+    .cli-button:hover::before {
+        left: 0;
+    }
+
+    .back-to-login.left-aligned {
+        position: fixed; /* Fixa o botão de voltar no topo à esquerda */
+        top: 10px;
+        left: 10px;
+    }
+    
+    .logout-button.right-aligned {
+        position: fixed; /* Fixa o botão de logout no topo à direita */
+        top: 10px;
+        right: 10px;
+    }
+
+    /* Estilização dos Botões */
+    .styled-button {
+        display: inline-block;
+        padding: 0.7rem 1.5rem;
+        background: #007bff; /* Azul vibrante */
+        color: white;
+        font-size: 1rem;
+        border: none;
+        border-radius: 100px; /* Bordas arredondadas */
+        cursor: pointer;
+        text-decoration: none;
+        width: 180px;
+        transition: background 0.3s ease, transform 0.3s ease; /* Transição suave */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra leve */
+    }
+
+    .styled-button i {
+        margin-right: 0.5rem;
+        font-size: 1.2rem;
+    }
+
+    .styled-button:hover {
+        background: #0056b3; /* Azul mais escuro ao passar o mouse */
+        transform: translateY(-2px); /* Efeito de elevação */
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Sombra mais pronunciada */
+    }
+
+  
+</style>
+
+/*Stilo para o Chatbot Assistente */
+  
+  /* ===== Layout Base ===== */
+  body, html {
+    background-color: #343541; /* Fundo escuro estilo ChatGPT */
+    color: #fff;
+    font-family: sans-serif;
+    height: 100%;
+  }
+  
+  /* Contêiner principal que envolve sidebar + área de chat */
+  .chatgpt-container {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+  }
+  
+  /* ===== SIDEBAR ===== */
+  .chatgpt-sidebar {
+    width: 260px;
+    background-color: #202123;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-right: 1px solid #2f3035;
+    transition: width 0.3s ease;
+  }
+  
+  .chatgpt-sidebar.collapsed {
+    width: 60px;
+  }
+  
+  /* Quando o sidebar está colapsado, ocultar textos */
+  .chatgpt-sidebar.collapsed .sidebar-header h2,
+  .chatgpt-sidebar.collapsed .username,
+  .chatgpt-sidebar.collapsed .new-chat-btn,
+  .chatgpt-sidebar.collapsed .back-btn {
+    display: none;
+  }
+  
+  .sidebar-header {
+    padding: 1rem;
+    border-bottom: 1px solid #2f3035;
+  }
+  
+  /* Parte de cima: botão hamburger + avatar */
+  .sidebar-top {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  /* Botão hamburger */
+  .toggle-sidebar-btn {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    margin-right: 1rem;
+    color: #fff;
+  }
+  
+  /* Avatar do usuário (primeira letra) */
+  .sidebar-user {
+    display: flex;
+    align-items: center;
+  }
+  .user-avatar {
+    width: 36px;
+    height: 36px;
+    background-color: #565772;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    margin-right: 0.5rem;
+    font-weight: bold;
+  }
+  .username {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  
+  .new-chat-btn {
+    width: 100%;
+    background-color: #3e3f4b;
+    border: none;
+    color: #fff;
+    padding: 0.7rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 1rem; /* Separação do avatar */
+  }
+  .new-chat-btn:hover {
+    background-color: #565772;
+  }
+  
+  .sidebar-history {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.5rem;
+  }
+  
+  .sidebar-history ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .sidebar-history li {
+    background-color: #3e3f4b;
+    margin-bottom: 0.5rem;
+    padding: 0.6rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  .sidebar-history li:hover {
+    background-color: #565772;
+  }
+  
+  .sidebar-footer {
+    padding: 1rem;
+    border-top: 1px solid #2f3035;
+  }
+  .back-btn {
+    width: 100%;
+    background-color: #3e3f4b;
+    border: none;
+    color: #fff;
+    padding: 0.7rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  .back-btn:hover {
+    background-color: #565772;
+  }
+  
+  /* ===== ÁREA PRINCIPAL DO CHAT ===== */
+  .chatgpt-main {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    background-color: #343541;
+    transition: margin-left 0.3s ease;
+  }
+  .chatgpt-main.sidebar-collapsed {
+    /* Ajustes opcionais quando o sidebar estiver colapsado */
+  }
+  
+  /* Cabeçalho do chat */
+  .chatgpt-header {
+    padding: 1rem;
+    border-bottom: 1px solid #2f3035;
+    text-align: center;
+  }
+  .chatgpt-header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  /* Ícone do título com efeito */
+  .title-icon svg {
+    transition: transform 0.3s ease, fill 0.3s ease;
+  }
+  .title-icon svg:hover {
+    transform: scale(1.1);
+    fill: #2bbbad; /* cor que lembra efeito “IA” */
+  }
+  
+  /* Mensagens */
+  .chatgpt-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+  }
+  
+  /* Input da mensagem */
+  .chatgpt-input-area {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border-top: 1px solid #2f3035;
+    background-color: #343541;
+  }
+  #user-input {
+    flex: 1;
+    background-color: #3e3f4b;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    padding: 0.8rem;
+    margin-right: 0.5rem;
+    font-size: 1rem;
+  }
+  #user-input:focus {
+    outline: 2px solid #565772;
+  }
+  .send-btn {
+    background-color: #10a37f;
+    border: none;
+    color: #fff;
+    padding: 0.8rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  .send-btn:hover {
+    background-color: #2bbbad;
+  }
+  
+  /* Barra de rolagem estilizada (opcional) */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #202123;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: #565772;
+    border-radius: 5px;
+  }
+  

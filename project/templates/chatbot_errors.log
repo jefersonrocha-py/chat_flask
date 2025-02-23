@@ -1,0 +1,1 @@
+2025-02-17 21:19:59,858 - ERROR - Erro ao carregar dados: Error raised by inference API HTTP code: 500, {"error":"model requires more system memory (3.5 GiB) than is available (3.2 GiB)"}
