@@ -381,9 +381,8 @@ body {
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Sombra suave */
         backdrop-filter: blur(10px); /* Efeito de desfoque no fundo */
         z-index: 1; /* Garante que o formulário fique acima do fundo */
-        width: 100%;
-        max-width: 400px; /* Largura máxima para responsividade */
-    }
+        width: 920px;
+        max-width: 580px; }
 
     /* Título da Página */
     .register-container h1 {
