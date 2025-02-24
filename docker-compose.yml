@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  # Serviço Flask e Streamlit
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: flask_streamlit_app
+    ports:
+      - "5000:5000" # Porta do Flask
+      - "8501:8501" # Porta do Streamlit Assistente
+      - "8502:8502" # Porta do Streamlit GPT
+    volumes:
+      - ./project:/app # Monta o diretório do projeto no contêiner
+      - ./project/data:/app/data # Volume persistente para o SQLite (users.db)
+    environment:
+      - FLASK_ENV=development
+      - SECRET_KEY=your_secret_key_here

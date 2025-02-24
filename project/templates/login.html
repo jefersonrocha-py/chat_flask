@@ -6,42 +6,60 @@
 <div class="login-container">
     <head>
         <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     </head>
     <h1 class="neon-text">🤖 FlowMind AI</h1>
     <p>Bem-vindo ao seu Assistente Virtual</p>
     <form method="POST" action="{{ url_for('login') }}">
-        <div>
+        <!-- Campos de Input -->
+        <div class="input-group">
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required />
         </div>
-        <div>
+        <div class="input-group">
             <label for="username">Login:</label>
             <input type="text" id="username" name="username" required />
         </div>
-        <div class="password-container">
+        <div class="input-group password-container">
             <label for="password">Senha:</label>
             <input type="password" id="password" name="password" required />
             <span class="toggle-password" onclick="togglePasswordVisibility()">
-                <i id="eye-icon" class="fa fa-eye"></i>
+                <i id="eye-icon" class="fas fa-eye"></i>
             </span>
         </div>
+
+        <!-- Checkbox Lembrar-me - Versão Corrigida -->
         <div class="remember-me">
-            <input type="checkbox" id="remember-me" name="remember-me" />
+            <input type="checkbox" id="remember-me" name="remember-me">
             <label for="remember-me">Lembrar-me</label>
         </div>
+
         <button type="submit">Entrar 🚀</button>
-        <p>
+        
+        <p class="forgot-password">
             Esqueceu sua senha?
             <a href="{{ url_for('forgot_password') }}">Clique aqui!</a>
         </p>
     </form>
-    <a href="{{ url_for('register') }}">Registrar-se</a>
+    <a href="{{ url_for('register') }}" class="register-link">Registrar-se</a>
 </div>
 
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
 <script>
-    // Carrega as partículas com a configuração
+    function togglePasswordVisibility() {
+        const passwordInput = document.getElementById('password');
+        const eyeIcon = document.getElementById('eye-icon');
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            eyeIcon.classList.replace('fa-eye', 'fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            eyeIcon.classList.replace('fa-eye-slash', 'fa-eye');
+        }
+    }
+
     particlesJS.load('particles-js', '{{ url_for("static", filename="particles-config.json") }}', function() {
         console.log('Partículas carregadas com sucesso!');
     });

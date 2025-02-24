@@ -14,6 +14,7 @@ FlowMind AI é uma aplicação web que oferece dois modos de interação com mod
 chat_etheriumtech/
 project/
 │
+├── data/                      # onde fica o users.db
 ├── app.py                     # Arquivo principal do Flask
 ├── requirements.txt           # Dependências do projeto
 ├── static/                    # Arquivos estáticos (CSS, JS, imagens, etc.)
@@ -24,6 +25,7 @@ project/
 │   ├── base.html              # Template base
 │   ├── login.html             # Página de login
 │   ├── register.html          # Página de registro
+│   ├── forgot_password.html 
 │   ├── mode_selection.html    # Página de seleção de modo
 │   ├── st_chatbot_assistente.py # Página do Modo Assistente
 │   └── st_chatbot_gpt.py       # Página do Modo GPT
