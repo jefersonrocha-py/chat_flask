@@ -165,22 +165,70 @@ def check_files_in_directory():
 st.markdown(
     """
     <style>
+    /* Estilo geral */
     .css-18e3th9 {
         padding-top: 1rem;
     }
     .css-1d391kg {
         padding: 0;
     }
-    .chat-title {
-        font-size: 2rem;
-        font-weight: bold;
-        text-align: center;
+
+    /* Avatar */
+    .avatar-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         margin-bottom: 20px;
-        color: #4CAF50;
     }
-    .emoji {
-        font-size: 2rem;
-        margin-right: 10px;
+    .avatar-initial {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: #4CAF50;
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 0.5rem;
+    }
+
+    /* Botão Voltar */
+    .back-button {
+        background-color: #2196F3; /* Azul */
+        color: white;
+        padding: 0.6em 1em;
+        border: none;
+        border-radius: 20px; /* Arredondado */
+        cursor: pointer;
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: bold;
+        box-shadow: none; /* Sem sombra */
+        outline: none; /* Remove o contorno branco */
+        transition: background-color 0.3s ease; /* Transição suave */
+    }
+
+    /* Adaptação para tema Light */
+    [data-testid="stSidebar"] .back-button {
+        background-color: #2196F3; /* Azul padrão */
+    }
+
+    /* Adaptação para tema Dark */
+    [data-testid="stSidebar"][class*="dark"] .back-button {
+        background-color: #1E88E5; /* Azul mais escuro para o tema Dark */
+    }
+
+    /* Rodapé da sidebar */
+    .sidebar-footer {
+        position: fixed;
+        bottom: 0;
+        width: 250px; /* Largura da sidebar */
+        background-color: transparent; /* Fundo transparente para adaptar ao tema */
+        padding: 10px 0;
+        text-align: center;
+        box-shadow: none; /* Sem sombra */
     }
     </style>
     """,
@@ -194,17 +242,35 @@ if "full_name" in params:
 
 def chatbot_assistente_page():
     # Título do chatbot (na área principal)
-    st.markdown('<div class="chat-title">🚀 FlowMind AI - AI da Etheriumtech 🤖</div>', unsafe_allow_html=True)
+    st.markdown('🚀 FlowMind AI - AI da Etheriumtech 🤖', unsafe_allow_html=True)
     
     # Verifica se há um arquivo disponível no diretório
     initial_file = check_files_in_directory()
     retriever = None
     if initial_file:
-        st.info(f"📄 Arquivo detectado no diretório: {os.path.basename(initial_file)}. Carregando...")
-        retriever = load_data(initial_file)
+        # Verifica se já existe um retriever carregado na sessão
+        if "retriever" not in st.session_state or st.session_state["current_file"] != initial_file:
+            st.info(f"📄 Arquivo detectado no diretório: {os.path.basename(initial_file)}. Carregando...")
+            retriever = load_data(initial_file)
+            st.session_state["retriever"] = retriever
+            st.session_state["current_file"] = initial_file
+        else:
+            retriever = st.session_state["retriever"]
     
     # Área lateral (sidebar)
     with st.sidebar:
+        # Exibir avatar no topo da sidebar com a inicial do usuário
+        full_name = st.session_state.get("full_name", "Usuário")
+        initial = full_name[0].upper() if full_name else "U"
+        st.markdown(
+            f"""
+            <div class="avatar-container">
+                <div class="avatar-initial">{initial}</div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
         st.header("📁 Upload dos Files")
         uploaded_file = st.file_uploader(
             "Envie sua base de conhecimento (.csv, .xml, .xls, .xlsx, .docx, .pdf, .txt)",
@@ -216,38 +282,27 @@ def chatbot_assistente_page():
                 with open(file_path, 'wb') as f:
                     f.write(uploaded_file.getbuffer())
                 st.success(f"✅ Arquivo {uploaded_file.name} carregado com sucesso!")
-                retriever = load_data(file_path)
+                # Atualiza o retriever apenas se o arquivo for diferente
+                if "current_file" not in st.session_state or st.session_state["current_file"] != file_path:
+                    retriever = load_data(file_path)
+                    st.session_state["retriever"] = retriever
+                    st.session_state["current_file"] = file_path
             except Exception as e:
                 show_error(f"Erro ao salvar arquivo: {e}")
 
-        # Botão "Voltar" para redirecionar ao Flask
+        # Botão "Voltar" no rodapé da sidebar
         FLASK_ROUTE = "http://localhost:5000/mode_selection"
         st.markdown(
             f"""
-            <a href="{FLASK_ROUTE}" target="_self" style="text-decoration: none;">
-                <button style="background-color: #F44336; color: white; padding: 0.6em 1em; border: none; border-radius: 4px; cursor: pointer;">
-                    🔙 Voltar
-                </button>
-            </a>
-            """,
-            unsafe_allow_html=True
-        )
-
-        # Espaçamento para empurrar o conteúdo para o rodapé do sidebar
-        st.markdown("<div style='height: 200px;'></div>", unsafe_allow_html=True)
-        
-        # Exibe o "Bem Vindo" com avatar redondo no rodapé do sidebar
-        full_name = st.session_state.get("full_name", "Usuário")
-        st.markdown(
-            f"""
-            <div style="display: flex; align-items: center;">
-                <img src="https://via.placeholder.com/50" style="border-radius: 50%; margin-right: 10px;" alt="Avatar">
-                <span style="font-size: 1rem; font-weight: bold;">Bem Vindo, {full_name}!</span>
+            <div class="sidebar-footer">
+                <a href="{FLASK_ROUTE}" target="_self" style="text-decoration: none;">
+                    <button class="back-button">🔙 Voltar</button>
+                </a>
             </div>
             """,
             unsafe_allow_html=True
         )
-    
+
     # Se houver retriever, exibe a interface do chat
     if retriever:
         rag_template = """

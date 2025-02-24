@@ -1,48 +1,42 @@
 {% extends "base.html" %}
-
 {% block content %}
 <!-- Fundo com Partículas -->
 <div id="particles-js"></div>
-
 <!-- Container do Login -->
 <div class="login-container">
+    <head>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    </head>
     <h1 class="neon-text">🤖 FlowMind AI</h1>
     <p>Bem-vindo ao seu Assistente Virtual</p>
     <form method="POST" action="{{ url_for('login') }}">
-        <label for="username">Usuário:</label>
-        <input type="text" id="username" name="username" required>
-        <label for="password">Senha:</label>
-        <input type="password" id="password" name="password" required>
+        <div>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required />
+        </div>
+        <div>
+            <label for="username">Login:</label>
+            <input type="text" id="username" name="username" required />
+        </div>
+        <div class="password-container">
+            <label for="password">Senha:</label>
+            <input type="password" id="password" name="password" required />
+            <span class="toggle-password" onclick="togglePasswordVisibility()">
+                <i id="eye-icon" class="fa fa-eye"></i>
+            </span>
+        </div>
+        <div class="remember-me">
+            <input type="checkbox" id="remember-me" name="remember-me" />
+            <label for="remember-me">Lembrar-me</label>
+        </div>
         <button type="submit">Entrar 🚀</button>
+        <p>
+            Esqueceu sua senha?
+            <a href="{{ url_for('forgot_password') }}">Clique aqui!</a>
+        </p>
     </form>
     <a href="{{ url_for('register') }}">Registrar-se</a>
 </div>
-
-<!-- Rodapé -->
-<footer class="footer">
-    <div class="footer-content">
-        <!-- Logo à Esquerda -->
-        <div class="footer-left">
-            <img src="https://etheriumtech.com.br/wp-content/uploads/2024/04/LOGO-BRANCO.png" alt="EtheriumTech Logo" class="footer-logo">
-        </div>
-        <!-- Texto Centralizado -->
-        <div class="footer-center">
-            <p class="footer-text neon-text">FlowMind AI  © todos os direitos reservados 2025</p>
-        </div>
-        <!-- Ícones à Direita -->
-        <div class="footer-right">
-            <a href="https://www.linkedin.com/company/etheriumtech/" target="_blank" aria-label="LinkedIn">
-                <i class="fab fa-linkedin"></i>
-            </a>
-            <a href="https://www.instagram.com/etheriumtech/" target="_blank" aria-label="Instagram">
-                <i class="fab fa-instagram"></i>
-            </a>
-            <a href="https://etheriumtech.com.br" target="_blank" aria-label="Website">
-                <i class="fas fa-globe"></i>
-            </a>
-        </div>
-    </div>
-</footer>
 
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>

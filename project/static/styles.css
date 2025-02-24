@@ -48,87 +48,170 @@ body {
             0 0 100px #00ff99;
     }
 }
+/* Fundo com Partículas */
+#particles-js {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
 
-/* Container do Login */
-.login-container {
+/* Container Principal (Login e Forgot Password) */
+.login-container,
+.forgot-password-container {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
-    background: rgba(255, 255, 255, 0.1); /* Fundo translúcido */
+    background: rgba(255, 255, 255, 0.1);
     padding: 2rem;
     border-radius: 50px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Sombra suave */
-    backdrop-filter: blur(10px); /* Efeito de desfoque no fundo */
-    z-index: 1; /* Garante que o formulário fique acima do fundo */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    z-index: 1;
     width: 920px;
-    max-width: 580px; /* Largura máxima para responsividade */
+    max-width: 580px;
 }
 
 /* Título da Página */
-.login-container h1 {
-    font-size: 3.0rem;
-    margin-bottom: 0.5rem;
+.login-container h1,
+.forgot-password-container h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: #ffffff;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
 /* Subtítulo */
-.login-container p {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-    color: #d3d3d3; /* Cinza claro para um visual limpo */
+.login-container p,
+.forgot-password-container p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    color: #d3d3d3;
+}
+
+/* Container dos Inputs */
+.login-container div,
+.forgot-password-container div {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+/* Rótulos dos Inputs */
+.login-container label,
+.forgot-password-container label {
+    font-size: 1rem;
+    color: #ffffff;
+    margin-right: 1rem;
+    min-width: 80px;
+    text-align: right;
 }
 
 /* Inputs de Formulário */
-.login-container input {
-    width: 100%;
+.login-container input,
+.forgot-password-container input {
+    flex: 1;
     padding: 0.5rem;
-    margin: 0.5rem 0;
     border: none;
     border-radius: 5px;
-    background: rgba(255, 255, 255, 0.2); /* Fundo translúcido */
-    color: white; /* Texto branco */
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
     font-size: 1rem;
 }
 
 /* Placeholder dos Inputs */
-.login-container input::placeholder {
-    color: #cccccc; /* Placeholder mais claro */
+.login-container input::placeholder,
+.forgot-password-container input::placeholder {
+    color: #cccccc;
+}
+
+/* Ícone de Olho para Senha */
+.password-container {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #aaa;
+    font-size: 1.2rem;
+}
+
+.toggle-password:hover {
+    color: #555;
 }
 
 /* Botão de Envio */
-.login-container button {
+.login-container button,
+.forgot-password-container button {
     width: 150px;
     padding: 0.9rem;
-    margin-top: 0.1rem;
+    margin-top: 1rem;
     border: none;
     border-radius: 50px;
-    background: #02933a; /* Azul vibrante */
+    background: #02933a;
     color: rgb(8, 1, 1);
     font-size: 1rem;
     cursor: pointer;
-    transition: background 0.3s ease; /* Transição suave ao passar o mouse */
+    transition: background 0.3s ease;
 }
 
 /* Hover no Botão */
-.login-container button:hover {
-    background: #62d891; /* Azul mais escuro ao passar o mouse */
+.login-container button:hover,
+.forgot-password-container button:hover {
+    background: #62d891;
 }
 
-/* Link de Registro */
-.login-container a {
+/* Link de Registro ou Voltar ao Login */
+.login-container a,
+.forgot-password-container a {
     display: block;
-    margin-top: 2rem;
-    color: #007bff; /* Mesmo azul do botão */
+    margin-top: 1rem;
+    color: #007bff;
     text-decoration: none;
     font-size: 0.9rem;
-    transition: color 0.3s ease; /* Transição suave ao passar o mouse */
+    transition: color 0.3s ease;
 }
 
 /* Hover no Link */
-.login-container a:hover {
+.login-container a:hover,
+.forgot-password-container a:hover {
     text-decoration: underline;
-    color: #0056b3; /* Azul mais escuro ao passar o mouse */
+    color: #0056b3;
+}
+
+/* Checkbox e Texto "Lembrar-me" - Versão Corrigida */
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 1rem 0;
+    justify-content: center;
+}
+
+.remember-me input[type="checkbox"] {
+    margin: 0;
+    width: 1.1rem;
+    height: 1.1rem;
+    cursor: pointer;
+}
+
+.remember-me label {
+    font-size: 0.9rem !important;
+    color: #ffffff !important;
+    margin: 0 !important;
+    min-width: auto !important;
+    text-align: left !important;
+    order: 2;
+    cursor: pointer;
 }
 
 /* Rodapé */
@@ -136,76 +219,72 @@ body {
     position: fixed;
     bottom: 0;
     width: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Fundo transparente */
+    background-color: rgba(0, 0, 0, 0.5);
     color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     padding: 0.5rem 1rem;
-    z-index: 1; /* Garante que o rodapé fique acima das partículas */
-    flex-wrap: wrap; /* Permite que os itens quebrem em telas menores */
+    z-index: 1;
 }
 
+/* Container principal */
 .footer-content {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     width: 100%;
 }
 
-.footer-left,
-.footer-center,
-.footer-right {
-    flex: 1; /* Divide o espaço igualmente */
-}
-
+/* Área da logo */
 .footer-left {
-    text-align: left; /* Alinha o logo à esquerda */
+    flex: 0 0 auto;
+    text-align: left;
 }
 
+/* Área do texto central */
 .footer-center {
-    text-align: center; /* Centraliza o texto "FlowMind AI" */
+    flex: 1 1 auto;
+    text-align: center;
+    overflow: hidden; /* Impede que o conteúdo extrapole */
 }
 
-.footer-right {
-    text-align: right; /* Alinha os ícones à direita */
-}
-
-.footer-logo {
-    max-width: 180px; /* Ajuste o tamanho da logo conforme necessário */
-    height: auto;
-}
-
-.social-icons {
-    display: flex;
-    gap: 1rem;
-    justify-content: center; /* Centraliza os ícones */
-}
-
-.social-icons a {
-    color: white;
-    font-size: 2.5rem;
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-.social-icons a:hover {
-    color: #00ff99; /* Verde neon ao passar o mouse */
-}
-
+/* Estilização do texto central com efeito neon e ellipsis se for muito longo */
 .footer-text {
     font-size: 1.2rem;
     margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.neon-text {
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.7),
+                 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+/* Área dos ícones sociais */
+.footer-right {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+}
+
+/* Estilo para os ícones sociais */
+.social-link {
+    color: white;
+    text-decoration: none;
+    font-size: 1.5rem;
+}
+
+/* Logo */
+.footer-logo {
+    max-width: 180px;
+    height: auto;
 }
 
 /* Responsividade para telas até 768px */
 @media (max-width: 768px) {
-    .footer {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        padding: 0.5rem;
-    }
     .footer-content {
         flex-direction: column;
     }
@@ -219,9 +298,6 @@ body {
     .footer-logo {
         max-width: 150px;
     }
-    .social-icons a {
-        font-size: 2rem;
-    }
     .footer-text {
         font-size: 1.5rem;
     }
@@ -232,16 +308,11 @@ body {
     .footer {
         padding: 0.8rem;
     }
-    .social-icons a {
-        font-size: 1.4rem;
-    }
     .footer-text {
         font-size: 1.2rem;
     }
 }
 
-
-}
 {% extends "base.html" %}
 
 {% block content %}
@@ -603,234 +674,3 @@ body {
         transform: translateY(-2px); /* Efeito de elevação */
         box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Sombra mais pronunciada */
     }
-
-  
-</style>
-
-/*Stilo para o Chatbot Assistente */
-  
-  /* ===== Layout Base ===== */
-  body, html {
-    background-color: #343541; /* Fundo escuro estilo ChatGPT */
-    color: #fff;
-    font-family: sans-serif;
-    height: 100%;
-  }
-  
-  /* Contêiner principal que envolve sidebar + área de chat */
-  .chatgpt-container {
-    display: flex;
-    height: 100vh;
-    overflow: hidden;
-  }
-  
-  /* ===== SIDEBAR ===== */
-  .chatgpt-sidebar {
-    width: 260px;
-    background-color: #202123;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    border-right: 1px solid #2f3035;
-    transition: width 0.3s ease;
-  }
-  
-  .chatgpt-sidebar.collapsed {
-    width: 60px;
-  }
-  
-  /* Quando o sidebar está colapsado, ocultar textos */
-  .chatgpt-sidebar.collapsed .sidebar-header h2,
-  .chatgpt-sidebar.collapsed .username,
-  .chatgpt-sidebar.collapsed .new-chat-btn,
-  .chatgpt-sidebar.collapsed .back-btn {
-    display: none;
-  }
-  
-  .sidebar-header {
-    padding: 1rem;
-    border-bottom: 1px solid #2f3035;
-  }
-  
-  /* Parte de cima: botão hamburger + avatar */
-  .sidebar-top {
-    display: flex;
-    align-items: center;
-    margin-bottom: 1rem;
-  }
-  
-  /* Botão hamburger */
-  .toggle-sidebar-btn {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    margin-right: 1rem;
-    color: #fff;
-  }
-  
-  /* Avatar do usuário (primeira letra) */
-  .sidebar-user {
-    display: flex;
-    align-items: center;
-  }
-  .user-avatar {
-    width: 36px;
-    height: 36px;
-    background-color: #565772;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    margin-right: 0.5rem;
-    font-weight: bold;
-  }
-  .username {
-    font-size: 1rem;
-    font-weight: 600;
-  }
-  
-  .new-chat-btn {
-    width: 100%;
-    background-color: #3e3f4b;
-    border: none;
-    color: #fff;
-    padding: 0.7rem;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    margin-top: 1rem; /* Separação do avatar */
-  }
-  .new-chat-btn:hover {
-    background-color: #565772;
-  }
-  
-  .sidebar-history {
-    flex: 1;
-    overflow-y: auto;
-    padding: 0.5rem;
-  }
-  
-  .sidebar-history ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .sidebar-history li {
-    background-color: #3e3f4b;
-    margin-bottom: 0.5rem;
-    padding: 0.6rem;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.2s ease;
-  }
-  .sidebar-history li:hover {
-    background-color: #565772;
-  }
-  
-  .sidebar-footer {
-    padding: 1rem;
-    border-top: 1px solid #2f3035;
-  }
-  .back-btn {
-    width: 100%;
-    background-color: #3e3f4b;
-    border: none;
-    color: #fff;
-    padding: 0.7rem;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-  }
-  .back-btn:hover {
-    background-color: #565772;
-  }
-  
-  /* ===== ÁREA PRINCIPAL DO CHAT ===== */
-  .chatgpt-main {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    background-color: #343541;
-    transition: margin-left 0.3s ease;
-  }
-  .chatgpt-main.sidebar-collapsed {
-    /* Ajustes opcionais quando o sidebar estiver colapsado */
-  }
-  
-  /* Cabeçalho do chat */
-  .chatgpt-header {
-    padding: 1rem;
-    border-bottom: 1px solid #2f3035;
-    text-align: center;
-  }
-  .chatgpt-header h1 {
-    margin: 0;
-    font-size: 1.5rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  
-  /* Ícone do título com efeito */
-  .title-icon svg {
-    transition: transform 0.3s ease, fill 0.3s ease;
-  }
-  .title-icon svg:hover {
-    transform: scale(1.1);
-    fill: #2bbbad; /* cor que lembra efeito “IA” */
-  }
-  
-  /* Mensagens */
-  .chatgpt-messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 1rem;
-  }
-  
-  /* Input da mensagem */
-  .chatgpt-input-area {
-    display: flex;
-    align-items: center;
-    padding: 1rem;
-    border-top: 1px solid #2f3035;
-    background-color: #343541;
-  }
-  #user-input {
-    flex: 1;
-    background-color: #3e3f4b;
-    border: none;
-    border-radius: 5px;
-    color: #fff;
-    padding: 0.8rem;
-    margin-right: 0.5rem;
-    font-size: 1rem;
-  }
-  #user-input:focus {
-    outline: 2px solid #565772;
-  }
-  .send-btn {
-    background-color: #10a37f;
-    border: none;
-    color: #fff;
-    padding: 0.8rem 1rem;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-  }
-  .send-btn:hover {
-    background-color: #2bbbad;
-  }
-  
-  /* Barra de rolagem estilizada (opcional) */
-  ::-webkit-scrollbar {
-    width: 8px;
-  }
-  ::-webkit-scrollbar-track {
-    background: #202123;
-  }
-  ::-webkit-scrollbar-thumb {
-    background-color: #565772;
-    border-radius: 5px;
-  }
-  

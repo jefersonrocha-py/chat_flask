@@ -1,15 +1,8 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 from utils.database import create_database, register_user, fetch_credentials
-from utils.chatbot_assistente import (
-    chatbot_assistente_logic,
-    check_files_in_directory,
-    load_data,
-    show_error
-)
-from utils.chatbot_gpt import chatbot_gpt_logic
-import os
-import bcrypt
 from datetime import timedelta
+import os
+import bcrypt  # Certifique-se de que o bcrypt esteja instalado e importado
 
 # Inicialização do aplicativo Flask
 app = Flask(__name__)
@@ -78,28 +71,36 @@ def mode_selection():
         return redirect(url_for("login"))
     return render_template("mode_selection.html")
 
-# Rota do Chatbot Assistente (Flask)
-@app.route("/streamlit_chatbot_assistente")
+# Rota para o Chatbot Assistente (Streamlit)
+@app.route("/chatbot_assistente")
 def chatbot_assistente():
     if not session.get("authenticated"):
         return redirect(url_for("login"))
-    # Pega o username da sessão do Flask
     username = session.get("username")
-    # Monta a URL para o app Streamlit (ajuste a porta se necessário)
+    # Redireciona para o app Streamlit st_chatbot_assistente.py rodando na porta 8501
     streamlit_url = f"http://localhost:8501/?username={username}"
     return redirect(streamlit_url)
 
-# Rota do Chatbot GPT
-@app.route("/chatbot_gpt", methods=["GET", "POST"])
+# Rota para o Chatbot GPT (Streamlit)
+@app.route("/chatbot_gpt")
 def chatbot_gpt():
     if not session.get("authenticated"):
         return redirect(url_for("login"))
+    username = session.get("username")
+    # Redireciona para o app Streamlit st_chatbot_gpt.py rodando na porta 8502
+    streamlit_url = f"http://localhost:8502/?username={username}"
+    return redirect(streamlit_url)
+
+# Rota para a página de recuperação de senha
+@app.route("/forgot-password", methods=["GET", "POST"])
+def forgot_password():
     if request.method == "POST":
-        user_input = request.form.get("user_input")
-        history = request.form.get("history", [])
-        response = chatbot_gpt_logic(user_input, history)
-        return jsonify({"response": response})
-    return render_template("chatbot_gpt.html", user_name=session.get("full_name"))
+        email = request.form.get("email")
+        # Aqui você pode implementar a lógica para enviar um e-mail de recuperação
+        # Exemplo: verificar se o e-mail existe no banco de dados e enviar um link de redefinição
+        flash("Um e-mail de recuperação foi enviado para o endereço fornecido.", "info")
+        return redirect(url_for("login"))
+    return render_template("forgot_password.html")
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -1,1 +1,2 @@
-2025-02-17 21:19:59,858 - ERROR - Erro ao carregar dados: Error raised by inference API HTTP code: 500, {"error":"model requires more system memory (3.5 GiB) than is available (3.2 GiB)"}
+2025-02-23 15:42:31,465 - ERROR - Erro ao gerar resposta: Ollama call failed with status code 404. Maybe your model is not found and you should pull the model with `ollama pull llama3.2:latest`.
+2025-02-23 17:49:34,266 - ERROR - Erro ao gerar resposta: Ollama call failed with status code 404. Maybe your model is not found and you should pull the model with `ollama pull llama3.2:latest`.
