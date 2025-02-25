@@ -65,7 +65,7 @@ except Exception as e:
     st.stop()
 
 # Criar diretório para armazenar arquivos
-DOCUMENTS_DIR = "/utils/uploads/files"
+DOCUMENTS_DIR = "/utils/uploads"
 try:
     os.makedirs(DOCUMENTS_DIR, exist_ok=True)
 except Exception as e:

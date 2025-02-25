@@ -5,6 +5,9 @@
 <!-- Container do Login -->
 <div class="login-container">
     <head>
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        <meta http-equiv="Pragma" content="no-cache">
+        <meta http-equiv="Expires" content="0">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     </head>
@@ -26,12 +29,6 @@
             <span class="toggle-password" onclick="togglePasswordVisibility()">
                 <i id="eye-icon" class="fas fa-eye"></i>
             </span>
-        </div>
-
-        <!-- Checkbox Lembrar-me - Versão Corrigida -->
-        <div class="remember-me">
-            <input type="checkbox" id="remember-me" name="remember-me">
-            <label for="remember-me">Lembrar-me</label>
         </div>
 
         <button type="submit">Entrar 🚀</button>
