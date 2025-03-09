@@ -1,4 +1,5 @@
 import os
+import requests
 import logging
 import pandas as pd
 import streamlit as st
@@ -12,6 +13,8 @@ from langchain_community.embeddings import OllamaEmbeddings
 from langchain_community.chat_models import ChatOllama
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
+import json
+import hashlib  # [Melhoria: Otimização de Desempenho] Para gerar hash do arquivo
 
 # Configuração de logging
 logging.basicConfig(
@@ -36,18 +39,17 @@ OLLAMA_SERVER_URL = "http://localhost:11434"
 
 # Verificar conexão com o servidor backend
 def check_backend_connection():
+    OLLAMA_SERVER_URL = "http://localhost:11434"
     try:
-        import requests
         response = requests.get(OLLAMA_SERVER_URL, timeout=5)
         if response.status_code == 200:
-            st.success("✅ Conexão com o servidor backend estabelecida!")
             return True
         else:
-            show_error(f"Erro ao conectar ao servidor backend: Status Code {response.status_code}")
+            st.error(f"Erro ao conectar ao servidor backend: Status Code {response.status_code}")
     except requests.exceptions.Timeout:
-        show_error(f"Timeout ao tentar conectar ao servidor backend em {OLLAMA_SERVER_URL}.")
+        st.error(f"Timeout ao tentar conectar ao servidor backend em {OLLAMA_SERVER_URL}.")
     except Exception as e:
-        show_error(f"Erro ao conectar ao servidor backend: {e}")
+        st.error(f"Erro ao conectar ao servidor backend: {e}")
     return False
 
 # Verificar conexão antes de prosseguir
@@ -65,9 +67,11 @@ except Exception as e:
     st.stop()
 
 # Criar diretório para armazenar arquivos
-DOCUMENTS_DIR = "/utils/uploads/files"
+DOCUMENTS_DIR = "utils/uploads/files"
 try:
     os.makedirs(DOCUMENTS_DIR, exist_ok=True)
+    # [Melhoria: Segurança] Definir permissões restritas para o diretório
+    os.chmod(DOCUMENTS_DIR, 0o700)  # Apenas o dono pode acessar
 except Exception as e:
     show_error(f"Erro ao criar diretório: {e}")
     st.stop()
@@ -121,8 +125,24 @@ def process_txt(file_path):
         show_error(f"Erro ao processar TXT: {e}")
         return None
 
+# [Melhoria: Segurança] Função para validar o tipo de arquivo
+def validate_file(uploaded_file):
+    allowed_types = ['csv', 'xml', 'xls', 'xlsx', 'docx', 'pdf', 'txt']
+    ext = uploaded_file.name.split('.')[-1].lower()
+    if ext not in allowed_types:
+        raise ValueError("Tipo de arquivo não suportado. Use .csv, .xml, .xls, .xlsx, .docx, .pdf ou .txt.")
+
+# [Melhoria: Otimização de Desempenho] Função para gerar hash do arquivo
+def get_file_hash(file_path):
+    try:
+        with open(file_path, 'rb') as f:
+            return hashlib.md5(f.read()).hexdigest()
+    except Exception as e:
+        show_error(f"Erro ao gerar hash do arquivo: {e}")
+        return None
+
 @st.cache_data
-def load_data(file_path):
+def load_data(file_path, _file_hash):  # [Melhoria: Otimização de Desempenho] Adicionado _file_hash para cache dinâmico
     """Carrega o arquivo e gera o retriever para busca."""
     try:
         file_type = file_path.split('.')[-1].lower()
@@ -163,6 +183,7 @@ def check_files_in_directory():
 
 # CSS customizado para estilização
 st.markdown(
+    
     """
     <style>
     /* Estilo geral */
@@ -172,27 +193,9 @@ st.markdown(
     .css-1d391kg {
         padding: 0;
     }
-
-    /* Avatar */
-    .avatar-container {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 20px;
-    }
-    .avatar-initial {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        background-color: #4CAF50;
-        color: white;
-        font-size: 24px;
-        font-weight: bold;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-right: 0.5rem;
-    }
+    .chat-title { font-size: 32px; font-weight: bold; text-align: center; margin-bottom: 10px; color: #4CAF50; }
+    .avatar-container { display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+    .avatar-initial { width: 60px; height: 60px; border-radius: 50%; background-color: #4CAF50; color: white; font-size: 24px; font-weight: bold; display: flex; align-items: center; justify-content: center; margin-right: 0.5rem; }
 
     /* Botão Voltar */
     .back-button {
@@ -235,15 +238,18 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Captura os parâmetros "full_name" da query string e salva na sessão
-params = st.query_params
-if "full_name" in params:
-    st.session_state["full_name"] = params["full_name"][0]
+# Obter o username dos parâmetros da URL
+query_params = st.query_params
+user_logged = query_params.get("username", ["Usuário"])[0]
+
 
 def chatbot_assistente_page():
-    # Título do chatbot (na área principal)
-    st.markdown('🚀 FlowMind AI - AI da Etheriumtech 🤖', unsafe_allow_html=True)
-    
+    st.markdown(
+        """
+        <div class="chat-title">FlowMind AI 🤖</div>
+        """,
+        unsafe_allow_html=True
+    )    
     # Verifica se há um arquivo disponível no diretório
     initial_file = check_files_in_directory()
     retriever = None
@@ -251,17 +257,15 @@ def chatbot_assistente_page():
         # Verifica se já existe um retriever carregado na sessão
         if "retriever" not in st.session_state or st.session_state["current_file"] != initial_file:
             st.info(f"📄 Arquivo detectado no diretório: {os.path.basename(initial_file)}. Carregando...")
-            retriever = load_data(initial_file)
+            file_hash = get_file_hash(initial_file)
+            retriever = load_data(initial_file, _file_hash=file_hash)
             st.session_state["retriever"] = retriever
             st.session_state["current_file"] = initial_file
         else:
             retriever = st.session_state["retriever"]
     
-    # Área lateral (sidebar)
     with st.sidebar:
-        # Exibir avatar no topo da sidebar com a inicial do usuário
-        full_name = st.session_state.get("full_name", "Usuário")
-        initial = full_name[0].upper() if full_name else "U"
+        initial = user_logged[0].upper() if user_logged else "U"
         st.markdown(
             f"""
             <div class="avatar-container">
@@ -272,23 +276,32 @@ def chatbot_assistente_page():
         )
 
         st.header("📁 Upload dos Files")
-        uploaded_file = st.file_uploader(
+        # [Melhoria: Permitir Múltiplos Uploads de Arquivos] Alterado para aceitar múltiplos arquivos
+        uploaded_files = st.file_uploader(
             "Envie sua base de conhecimento (.csv, .xml, .xls, .xlsx, .docx, .pdf, .txt)",
-            type=['csv', 'xml', 'xls', 'xlsx', 'docx', 'pdf', 'txt']
+            type=['csv', 'xml', 'xls', 'xlsx', 'docx', 'pdf', 'txt'],
+            accept_multiple_files=True
         )
-        if uploaded_file:
-            try:
-                file_path = os.path.join(DOCUMENTS_DIR, uploaded_file.name)
-                with open(file_path, 'wb') as f:
-                    f.write(uploaded_file.getbuffer())
-                st.success(f"✅ Arquivo {uploaded_file.name} carregado com sucesso!")
-                # Atualiza o retriever apenas se o arquivo for diferente
-                if "current_file" not in st.session_state or st.session_state["current_file"] != file_path:
-                    retriever = load_data(file_path)
+        if uploaded_files:
+            for uploaded_file in uploaded_files:
+                try:
+                    # [Melhoria: Segurança] Validar o arquivo antes de processar
+                    validate_file(uploaded_file)
+                    file_path = os.path.join(DOCUMENTS_DIR, uploaded_file.name)
+                    with open(file_path, 'wb') as f:
+                        f.write(uploaded_file.getbuffer())
+                    # [Melhoria: Interface do Usuário] Feedback positivo com nome do arquivo
+                    st.success(f"✅ Arquivo {uploaded_file.name} carregado com sucesso!")
+                    # [Melhoria: Interface do Usuário] Indicador de progresso durante o processamento
+                    with st.spinner(f"Processando {uploaded_file.name}..."):
+                        file_hash = get_file_hash(file_path)
+                        retriever = load_data(file_path, _file_hash=file_hash)
                     st.session_state["retriever"] = retriever
                     st.session_state["current_file"] = file_path
-            except Exception as e:
-                show_error(f"Erro ao salvar arquivo: {e}")
+                except ValueError as ve:
+                    show_error(str(ve))
+                except Exception as e:
+                    show_error(f"Erro ao salvar ou processar arquivo: {e}")
 
         # Botão "Voltar" no rodapé da sidebar
         FLASK_ROUTE = "http://localhost:5000/mode_selection"
@@ -305,10 +318,10 @@ def chatbot_assistente_page():
 
     # Se houver retriever, exibe a interface do chat
     if retriever:
+        # [Melhoria: Melhoria no Modelo - Ajuste no Prompt] Template ajustado para respostas mais precisas
         rag_template = """
-        Você é um assistente virtual. 
-        Seu trabalho é ajudar os usuários com base nas informações fornecidas no arquivo.
-        Forneça respostas curtas, claras e precisas.
+        Você é um assistente especializado. 
+        Seu trabalho é fornecer respostas claras, concisas e precisas com base nas informações fornecidas no arquivo.
         Contexto: {context}
         Pergunta do cliente: {question}
         """
@@ -340,10 +353,20 @@ def chatbot_assistente_page():
                     full_response += str(partial_response.content)
                     response_text.markdown(full_response + "▌")
                 st.session_state.messages.append({"role": "assistant", "content": full_response})
+                # [Melhoria: Salvar Histórico Persistente em Arquivo JSON] Salva o histórico após cada resposta
+                save_history()
             except Exception as e:
                 show_error(f"Erro ao gerar resposta: {e}")
     else:
         st.info("📂 Use a aba à esquerda para carregar um arquivo e começar.")
+
+# [Melhoria: Salvar Histórico Persistente em Arquivo JSON] Função para salvar o histórico em JSON
+def save_history():
+    try:
+        with open("chat_history.json", "w") as f:
+            json.dump(st.session_state.messages, f)
+    except Exception as e:
+        show_error(f"Erro ao salvar histórico: {e}")
 
 # Executa a página do chatbot
 try:

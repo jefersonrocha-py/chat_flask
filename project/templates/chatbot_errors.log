@@ -1,2 +1,0 @@
-2025-02-23 15:42:31,465 - ERROR - Erro ao gerar resposta: Ollama call failed with status code 404. Maybe your model is not found and you should pull the model with `ollama pull llama3.2:latest`.
-2025-02-23 17:49:34,266 - ERROR - Erro ao gerar resposta: Ollama call failed with status code 404. Maybe your model is not found and you should pull the model with `ollama pull llama3.2:latest`.
