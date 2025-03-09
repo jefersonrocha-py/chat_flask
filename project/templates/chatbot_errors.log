@@ -1,0 +1,9 @@
+2025-03-09 13:23:22,028 - ERROR - Erro crítico na aplicação: Expected a Runnable, callable or dict.Instead got an unsupported type: <class 'str'>
+2025-03-09 13:23:33,226 - ERROR - Erro crítico na aplicação: Expected a Runnable, callable or dict.Instead got an unsupported type: <class 'str'>
+2025-03-09 13:23:36,593 - ERROR - Erro crítico na aplicação: Expected a Runnable, callable or dict.Instead got an unsupported type: <class 'str'>
+2025-03-09 13:24:16,340 - ERROR - Erro crítico na aplicação: Expected a Runnable, callable or dict.Instead got an unsupported type: <class 'str'>
+2025-03-09 13:24:21,976 - ERROR - Erro crítico na aplicação: Expected a Runnable, callable or dict.Instead got an unsupported type: <class 'str'>
+2025-03-09 13:25:24,168 - ERROR - Erro crítico na aplicação: Expected a Runnable, callable or dict.Instead got an unsupported type: <class 'str'>
+2025-03-09 13:25:24,171 - ERROR - Erro crítico na aplicação: Expected a Runnable, callable or dict.Instead got an unsupported type: <class 'str'>
+2025-03-09 13:25:36,967 - ERROR - Erro crítico na aplicação: Expected a Runnable, callable or dict.Instead got an unsupported type: <class 'str'>
+2025-03-09 13:35:07,226 - ERROR - Erro crítico na aplicação: cannot access local variable 'retriever' where it is not associated with a value

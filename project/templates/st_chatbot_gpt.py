@@ -69,6 +69,81 @@ st.markdown(
     .back-button { background-color: #2196F3; color: white; padding: 0.6em 1em; border: none; border-radius: 20px; cursor: pointer; text-decoration: none; font-size: 16px; font-weight: bold; box-shadow: none; outline: none; transition: background-color 0.3s ease; }
     [data-testid="stSidebar"] .back-button { background-color: #2196F3; }
     [data-testid="stSidebar"][class*="dark"] .back-button { background-color: #1E88E5; }
+    .stButton>button:hover {
+        filter: var(--hover-effect);
+        transform: translateY(-2px);
+    }
+
+    /* Ajusta o input do chat para não sobrepor o footer */
+    [data-testid="stChatInput"] {
+        margin-bottom: 90px !important; /* Aumente/diminua conforme necessário */
+    }
+
+    /* Footer Dinâmico */
+    .custom-footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        /* Defina uma cor de fundo sólida que contraste com o tema */
+        background-color: #0E1117; 
+        padding: 1rem 5%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 9999; /* Certifique-se de estar acima do conteúdo principal */
+        border-top: 1px solid #2f2f2f;
+        color: #fff; /* Texto branco para contraste */
+    }
+
+    .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+    }
+
+    .footer-logo img {
+        height: 40px;
+        filter: brightness(0) invert(var(--logo-invert, 0));
+        transition: transform 0.3s;
+    }
+
+    .footer-center {
+        flex-grow: 1;
+        text-align: center;
+        font-size: 0.95rem;
+        margin: 0 1.5rem;
+    }
+
+    .footer-neon {
+        animation: neonPulse 1.5s infinite alternate;
+        white-space: nowrap;
+    }
+
+    @keyframes neonPulse {
+        from { text-shadow: 0 0 5px rgba(8,255,184,0.3); }
+        to { text-shadow: 0 0 15px rgba(8,255,184,0.5); }
+    }
+
+    @media (max-width: 768px) {
+        .footer-content {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .footer-center {
+            order: 2;
+            margin: 0;
+        }
+        .footer-logo {
+            order: 1;
+        }
+        .footer-neon {
+            order: 3;
+        }
+    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -130,8 +205,16 @@ def chatbot_gpt_page():
         try:
             for i, history in enumerate(st.session_state.conversation_history):
                 default_title = f"Conversa {i + 1}"
-                title = st.session_state.conversation_titles[i] if i < len(st.session_state.conversation_titles) else default_title
-                new_title = st.text_input(f"Título da conversa {i + 1}", value=title, key=f"title_{i}_input")
+                title = (
+                    st.session_state.conversation_titles[i]
+                    if i < len(st.session_state.conversation_titles)
+                    else default_title
+                )
+                new_title = st.text_input(
+                    f"Título da conversa {i + 1}", 
+                    value=title, 
+                    key=f"title_{i}_input"
+                )
                 if new_title != title:
                     if i < len(st.session_state.conversation_titles):
                         st.session_state.conversation_titles[i] = new_title
@@ -216,14 +299,35 @@ def chatbot_gpt_page():
             idx = st.session_state.current_conversation_index
             if idx is None or idx >= len(st.session_state.conversation_history):
                 st.session_state.conversation_history.append(st.session_state.current_messages.copy())
-                st.session_state.conversation_titles.append(generate_conversation_title(st.session_state.current_messages))
+                st.session_state.conversation_titles.append(
+                    generate_conversation_title(st.session_state.current_messages)
+                )
                 st.session_state.current_conversation_index = len(st.session_state.conversation_history) - 1
             else:
                 st.session_state.conversation_history[idx] = st.session_state.current_messages.copy()
-                st.session_state.conversation_titles[idx] = generate_conversation_title(st.session_state.current_messages)
+                st.session_state.conversation_titles[idx] = generate_conversation_title(
+                    st.session_state.current_messages
+                )
             save_history()
     except Exception as e:
         show_error(f"Erro ao salvar conversa no histórico: {e}")
+
+    # Footer Dinâmico (exibido sempre)
+    st.markdown("""
+        <div class="custom-footer">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="https://etheriumtech.com.br/wp-content/uploads/2024/04/LOGO-BRANCO.png" alt="Logo">
+                </div>
+                <div class="footer-center">
+                    FlowMind AI © 2025 - Todos os direitos reservados
+                </div>
+                <div class="footer-neon">
+                    💡🔗 Powered by Jeferson Rocha
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
 # Executa a página
 try:

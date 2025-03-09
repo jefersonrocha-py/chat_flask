@@ -181,9 +181,8 @@ def check_files_in_directory():
         show_error(f"Erro ao verificar diretório: {e}")
         return None
 
-# CSS customizado para estilização
+# CSS customizado para estilização (incluindo o footer fixo e ajuste do chat input)
 st.markdown(
-    
     """
     <style>
     /* Estilo geral */
@@ -193,9 +192,32 @@ st.markdown(
     .css-1d391kg {
         padding: 0;
     }
-    .chat-title { font-size: 32px; font-weight: bold; text-align: center; margin-bottom: 10px; color: #4CAF50; }
-    .avatar-container { display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
-    .avatar-initial { width: 60px; height: 60px; border-radius: 50%; background-color: #4CAF50; color: white; font-size: 24px; font-weight: bold; display: flex; align-items: center; justify-content: center; margin-right: 0.5rem; }
+    .chat-title {
+        font-size: 32px;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 10px;
+        color: #4CAF50;
+    }
+    .avatar-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+    .avatar-initial {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: #4CAF50;
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 0.5rem;
+    }
 
     /* Botão Voltar */
     .back-button {
@@ -212,12 +234,10 @@ st.markdown(
         outline: none; /* Remove o contorno branco */
         transition: background-color 0.3s ease; /* Transição suave */
     }
-
     /* Adaptação para tema Light */
     [data-testid="stSidebar"] .back-button {
         background-color: #2196F3; /* Azul padrão */
     }
-
     /* Adaptação para tema Dark */
     [data-testid="stSidebar"][class*="dark"] .back-button {
         background-color: #1E88E5; /* Azul mais escuro para o tema Dark */
@@ -233,6 +253,76 @@ st.markdown(
         text-align: center;
         box-shadow: none; /* Sem sombra */
     }
+
+    /* Ajusta o input do chat para não sobrepor o footer */
+    [data-testid="stChatInput"] {
+        margin-bottom: 90px !important; /* Aumente/diminua conforme necessário */
+    }
+
+    /* Footer fixo */
+    .custom-footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: #0E1117; /* Ajuste para a cor desejada */
+        padding: 1rem 5%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 9999;
+        border-top: 1px solid #2f2f2f;
+        color: #fff;
+    }
+
+    .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+    }
+
+    .footer-logo img {
+        height: 40px;
+        filter: brightness(0) invert(var(--logo-invert, 0));
+        transition: transform 0.3s;
+    }
+
+    .footer-center {
+        flex-grow: 1;
+        text-align: center;
+        font-size: 0.95rem;
+        margin: 0 1.5rem;
+    }
+
+    .footer-neon {
+        animation: neonPulse 1.5s infinite alternate;
+        white-space: nowrap;
+    }
+
+    @keyframes neonPulse {
+        from { text-shadow: 0 0 5px rgba(8,255,184,0.3); }
+        to { text-shadow: 0 0 15px rgba(8,255,184,0.5); }
+    }
+
+    @media (max-width: 768px) {
+        .footer-content {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .footer-center {
+            order: 2;
+            margin: 0;
+        }
+        .footer-logo {
+            order: 1;
+        }
+        .footer-neon {
+            order: 3;
+        }
+    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -242,14 +332,14 @@ st.markdown(
 query_params = st.query_params
 user_logged = query_params.get("username", ["Usuário"])[0]
 
-
 def chatbot_assistente_page():
     st.markdown(
         """
         <div class="chat-title">FlowMind AI 🤖</div>
         """,
         unsafe_allow_html=True
-    )    
+    )
+
     # Verifica se há um arquivo disponível no diretório
     initial_file = check_files_in_directory()
     retriever = None
@@ -263,7 +353,7 @@ def chatbot_assistente_page():
             st.session_state["current_file"] = initial_file
         else:
             retriever = st.session_state["retriever"]
-    
+
     with st.sidebar:
         initial = user_logged[0].upper() if user_logged else "U"
         st.markdown(
@@ -333,12 +423,12 @@ def chatbot_assistente_page():
         )
         if "messages" not in st.session_state:
             st.session_state.messages = []
-        
+
         # Exibe o histórico de mensagens
         for message in st.session_state.messages:
             with st.chat_message(message["role"]):
                 st.markdown(message["content"])
-        
+
         # Entrada do usuário
         if user_input := st.chat_input("Você:"):
             st.session_state.messages.append({"role": "user", "content": user_input})
@@ -359,6 +449,23 @@ def chatbot_assistente_page():
                 show_error(f"Erro ao gerar resposta: {e}")
     else:
         st.info("📂 Use a aba à esquerda para carregar um arquivo e começar.")
+
+    # Footer fixo (exibido sempre)
+    st.markdown("""
+        <div class="custom-footer">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="https://etheriumtech.com.br/wp-content/uploads/2024/04/LOGO-BRANCO.png" alt="Logo">
+                </div>
+                <div class="footer-center">
+                    FlowMind AI © 2025 - Todos os direitos reservados
+                </div>
+                <div class="footer-neon">
+                    💡🔗 Powered by Jeferson Rocha
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
 # [Melhoria: Salvar Histórico Persistente em Arquivo JSON] Função para salvar o histórico em JSON
 def save_history():
