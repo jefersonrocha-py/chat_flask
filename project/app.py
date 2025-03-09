@@ -91,6 +91,16 @@ def chatbot_gpt():
     streamlit_url = f"http://localhost:8502/?username={username}"
     return redirect(streamlit_url)
 
+# Rota para o Chatbot GPT (Streamlit)
+@app.route("/chatbot_coder")
+def chatbot_coder():
+    if not session.get("authenticated"):
+        return redirect(url_for("login"))
+    username = session.get("username")
+    # Redireciona para o app Streamlit st_chatbot_gpt.py rodando na porta 8502
+    streamlit_url = f"http://localhost:8503/?username={username}"
+    return redirect(streamlit_url)
+
 # Rota para a página de recuperação de senha
 @app.route("/forgot-password", methods=["GET", "POST"])
 def forgot_password():

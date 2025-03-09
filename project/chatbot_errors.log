@@ -1,9 +1,0 @@
-2025-02-23 13:36:28,932 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
- * Running on http://127.0.0.1:5000
-2025-02-23 13:36:28,933 - INFO - [33mPress CTRL+C to quit[0m
-2025-02-23 13:36:28,948 - INFO -  * Restarting with watchdog (windowsapi)
-2025-02-23 13:36:34,087 - WARNING -  * Debugger is active!
-2025-02-23 13:36:34,092 - INFO -  * Debugger PIN: 221-432-544
-2025-02-23 13:37:08,122 - INFO -  * Detected change in 'D:\\Nova pasta\\chat_flask\\project\\utils\\chatbot_assistente.py', reloading
-2025-02-23 13:37:08,153 - INFO -  * Detected change in 'D:\\Nova pasta\\chat_flask\\project\\utils\\chatbot_gpt.py', reloading
-2025-02-23 13:37:08,513 - INFO -  * Restarting with watchdog (windowsapi)
