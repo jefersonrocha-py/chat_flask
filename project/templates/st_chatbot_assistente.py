@@ -67,7 +67,11 @@ except Exception as e:
     st.stop()
 
 # Criar diretório para armazenar arquivos
+<<<<<<< HEAD
 DOCUMENTS_DIR = "utils/uploads/files"
+=======
+DOCUMENTS_DIR = "/utils/uploads"
+>>>>>>> 735d9c5265cef615172539cd8bd0e6a50fd9d3c0
 try:
     os.makedirs(DOCUMENTS_DIR, exist_ok=True)
     # [Melhoria: Segurança] Definir permissões restritas para o diretório
