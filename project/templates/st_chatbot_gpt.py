@@ -9,7 +9,7 @@ import requests
 
 # Configuração de logging
 logging.basicConfig(
-    filename="chatbot_errors.log",
+    filename="chatbot_gpt_errors.log",
     level=logging.ERROR,
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
@@ -167,7 +167,7 @@ def generate_conversation_title(messages):
 # Função para salvar histórico em JSON
 def save_history():
     try:
-        with open("chat_history.json", "w") as f:
+        with open("chat_gpt_history.json", "w") as f:
             json.dump({
                 "conversation_history": st.session_state.conversation_history,
                 "conversation_titles": st.session_state.conversation_titles
