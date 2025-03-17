@@ -246,12 +246,13 @@ st.markdown(
     /* Rodapé da sidebar */
     .sidebar-footer {
         position: fixed;
-        bottom: 0;
-        width: 250px; /* Largura da sidebar */
-        background-color: transparent; /* Fundo transparente para adaptar ao tema */
-        padding: 10px 0;
+        bottom: 100px;
+        left: 0;
+        width: 244px;
         text-align: center;
-        box-shadow: none; /* Sem sombra */
+        z-index: 10000;
+        margin-left: 1rem;
+        padding-bottom: 10px;
     }
 
     /* Ajusta o input do chat para não sobrepor o footer */

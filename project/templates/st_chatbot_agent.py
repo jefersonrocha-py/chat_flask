@@ -41,7 +41,7 @@ except Exception as e:
     show_error(f"Erro ao configurar o chat model: {e}")
     st.stop()
 
-# CSS customizado (mantido igual ao original)
+# CSS customizado (mantido conforme o original)
 st.markdown("""
     <style>
     .sidebar-footer {
@@ -53,6 +53,25 @@ st.markdown("""
         z-index: 10000;
         margin-left: 1rem;
         padding-bottom: 10px;
+    }
+    .avatar-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+        margin-top: 20px;
+    }
+    .avatar-initial {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: #4CAF50;
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     .back-button {
         background-color: #4CAF50;
@@ -125,7 +144,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# Botão de voltar na sidebar
+# Botão de voltar na sidebar (mantido no final da sidebar)
 FLASK_ROUTE = "http://localhost:5000/mode_selection"
 st.sidebar.markdown(
     f"""
@@ -133,6 +152,19 @@ st.sidebar.markdown(
         <a href="{FLASK_ROUTE}" target="_self">
             <button class="back-button">⬅️ Voltar</button>
         </a>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+# Obtém o username dos parâmetros da URL e define o avatar
+query_params = st.query_params
+user_logged = query_params.get("username", ["Usuário"])[0]
+initial = user_logged[0].upper() if user_logged else "U"
+st.sidebar.markdown(
+    f"""
+    <div class="avatar-container">
+        <div class="avatar-initial">{initial}</div>
     </div>
     """,
     unsafe_allow_html=True
@@ -150,7 +182,7 @@ if st.sidebar.button("Limpar Histórico"):
     st.session_state["chat_messages"] = []
     st.success("Histórico limpo com sucesso!")
 
-# No modo Educacional, exibe o uploader de áudio na sidebar
+# Uploader de áudio aparece somente para o modo Educacional
 audio_text = None
 if agent_mode == "Educacional":
     audio_file = st.sidebar.file_uploader("Envie um arquivo de áudio (mp3, wav)", type=["mp3", "wav"])
@@ -192,30 +224,39 @@ def get_prompt(query: str, mode: str, audio_info: str = None) -> str:
         full_query += f"\nÁudio: {audio_info}"
     return f"{prefix}\nConsulta do usuário: {full_query}"
 
-# Inicializa o histórico do chat na sessão
+# Inicializa o histórico do chat na sessão, se ainda não existir
 if "chat_messages" not in st.session_state:
     st.session_state["chat_messages"] = []
 
 st.markdown("<div class='chat-title'>FlowMind Agent AI🤖</div>", unsafe_allow_html=True)
 
-# Exibe o histórico do chat
-for message in st.session_state["chat_messages"]:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+# Container para o histórico do chat (para atualização dinâmica)
+chat_container = st.container()
+
+def render_chat():
+    with chat_container:
+        for message in st.session_state["chat_messages"]:
+            with st.chat_message(message["role"]):
+                st.markdown(message["content"])
+
+# Renderiza o histórico existente
+render_chat()
 
 # Entrada do usuário (texto)
 user_input = st.chat_input("Digite sua consulta:")
 
 # Se houver entrada do usuário ou áudio, processa a consulta
 if user_input or audio_text:
+    # Atualiza imediatamente o histórico com o prompt do usuário
     combined_input = user_input if user_input else ""
     if audio_text:
         combined_input += f"\n{audio_text}"
     st.session_state["chat_messages"].append({"role": "user", "content": combined_input})
-    
+    render_chat()  # Atualiza a exibição para mostrar a mensagem do usuário
+
     prompt = get_prompt(user_input, agent_mode, audio_info=audio_text)
     
-    # Processamento com spinner e tempo de pesquisa
+    # Para os modos de pesquisa (Pesquisa Web e Análise), utiliza spinner com contagem do tempo
     start_time = time.time()
     try:
         with st.spinner("Gerando resposta..."):
@@ -223,26 +264,24 @@ if user_input or audio_text:
     except Exception as e:
         show_error(f"Erro ao gerar resposta: {e}")
         response = "Desculpe, ocorreu um erro ao gerar a resposta."
-    
     elapsed = time.time() - start_time
-    
-    # Exibe o tempo de pesquisa apenas para Pesquisa Web e Análise
     if agent_mode in ["Pesquisa Web", "Análise"]:
-        st.success(f"Pesquisa concluída em {elapsed:.1f} segundos!")
+        st.success(f"Processamento concluído em {elapsed:.1f} segundos!")
     
     st.session_state["chat_messages"].append({"role": "assistant", "content": response})
+    render_chat()  # Atualiza novamente o histórico com a resposta
 
-# Função para salvar o histórico do chat
+# Função para salvar o histórico do chat (opcional)
 def save_history():
     try:
-        with open("chat_history.json", "w") as f:
+        with open("chatbot_agent_history.json", "w") as f:
             json.dump(st.session_state["chat_messages"], f)
     except Exception as e:
         show_error(f"Erro ao salvar histórico: {e}")
 
 save_history()
 
-# Footer customizado (mantido igual ao original)
+# Footer customizado
 st.markdown(
     """
     <div class="custom-footer">

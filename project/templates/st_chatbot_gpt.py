@@ -63,7 +63,16 @@ st.markdown(
     .css-18e3th9 { padding-top: 1rem; }
     .css-1d391kg { padding: 0; }
     .chat-title { font-size: 32px; font-weight: bold; text-align: center; margin-bottom: 10px; color: #4CAF50; }
-    .sidebar-footer { position: fixed; bottom: 0; width: 250px; background-color: transparent; padding: 10px 0; text-align: center; box-shadow: none; }
+    .sidebar-footer {
+        position: fixed;
+        bottom: 100px;
+        left: 0;
+        width: 244px;
+        text-align: center;
+        z-index: 10000;
+        margin-left: 1rem;
+        padding-bottom: 10px;
+    }
     .avatar-container { display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
     .avatar-initial { width: 60px; height: 60px; border-radius: 50%; background-color: #4CAF50; color: white; font-size: 24px; font-weight: bold; display: flex; align-items: center; justify-content: center; margin-right: 0.5rem; }
     .back-button { background-color: #2196F3; color: white; padding: 0.6em 1em; border: none; border-radius: 20px; cursor: pointer; text-decoration: none; font-size: 16px; font-weight: bold; box-shadow: none; outline: none; transition: background-color 0.3s ease; }

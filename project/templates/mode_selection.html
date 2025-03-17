@@ -10,45 +10,46 @@
     <div class="modes-container">
         <!-- Card do Modo Assistente (Streamlit) -->
         <div class="mode-card">
-            <h3><i class="fas fa-file-alt"></i> Modo Assistente </h3>
+            <h3><i class="fas fa-file-alt"></i> Modo Assistente</h3>
             <p>
-                Este modo utiliza <strong>Retrieval-Augmented Generation (RAG)</strong> combinando a recuperação de informações de uma base de conhecimento específica com a geração de texto contextualizado. Ideal para consultas técnicas, análise de documentos e respostas precisas com base em dados estruturados ou não estruturados.
+                Utiliza <strong>Retrieval-Augmented Generation (RAG)</strong> para combinar recuperação de informações de uma base de conhecimento com geração de texto. Ideal para consultas técnicas, análise de documentos e respostas precisas.
             </p>
-            <a href="{{ url_for('chatbot_assistente') }}" class="cli-button">
+            <a href="{{ url_for('chatbot_assistente') }}" class="cli-button" aria-label="Acessar Modo Assistente">
                 <i class="fas fa-terminal"></i> Modo Assistente 🚀
             </a>
         </div>
         <!-- Card do Modo GPT (Streamlit) -->
         <div class="mode-card">
-            <h3><i class="fas fa-comments"></i> Modo GPT </h3>
+            <h3><i class="fas fa-comments"></i> Modo GPT</h3>
             <p>
-                Este modo utiliza o modelo <strong>GPT (Generative Pre-trained Transformer)</strong> uma arquitetura de linguagem de última geração capaz de gerar respostas criativas, fluidas e contextualizadas. Perfeito para diálogos informais, brainstorming e interações gerais sem a necessidade de uma base de conhecimento específica.
+                Utiliza <strong>GPT</strong>, uma arquitetura avançada para gerar respostas criativas e fluidas. Perfeito para diálogos informais, brainstorming e interações gerais.
             </p>
-            <a href="{{ url_for('chatbot_gpt') }}" class="cli-button">
+            <a href="{{ url_for('chatbot_gpt') }}" class="cli-button" aria-label="Acessar Modo GPT">
                 <i class="fas fa-terminal"></i> Modo GPT 🚀
             </a>
         </div>
-        <!-- Card do Modo Coder (Streamlit) -->
+        <!-- Card do Modo Agent (Streamlit) -->
         <div class="mode-card">
-            <h3><i class="fas fa-code"></i> Modo Coder</h3>
+            <h3><i class="fas fa-code"></i> Modo Agent</h3>
             <p>
-                Este modo utiliza o modelo <strong>Coder</strong>, é usada como uma IA especializada em programação, projetada para oferecer soluções técnicas, exemplos de código comentados e suporte em diversas linguagens. Ideal para desenvolvedores que precisam de ajuda com debugging, escrita de código ou explicações detalhadas.
+                Utiliza o <strong>Agent</strong>, uma IA versátil para os modos Educacional, Análise e Pesquisa na Web. Auxilia no aprendizado com correções personalizadas, analisa documentos com precisão e pesquisa informações confiáveis na web. Ideal para estudantes, pesquisadores e curiosos.
             </p>
-            <a href="{{ url_for('chatbot_coder') }}" class="cli-button">
-                <i class="fas fa-terminal"></i> Modo Coder 💻
+            <a href="{{ url_for('chatbot_agent') }}" class="cli-button" aria-label="Acessar Modo Agent">
+                <i class="fas fa-terminal"></i> Modo Agent 🚀
             </a>
-    </div>
+        </div>
+    </div><!-- Fechamento do modes-container -->
     <!-- Botões Acima do Rodapé -->
     <div class="buttons-above-footer">
         <!-- Botão de Voltar (Esquerda) -->
         <div class="back-to-login left-aligned">
-            <a href="{{ url_for('login') }}" class="styled-button">
+            <a href="{{ url_for('login') }}" class="styled-button" aria-label="Voltar ao Login">
                 <i class="fas fa-arrow-left"></i> Voltar ao Login
             </a>
         </div>
         <!-- Botão de Logout (Direita) -->
         <div class="logout-button right-aligned">
-            <a href="{{ url_for('logout') }}" class="styled-button">
+            <a href="{{ url_for('logout') }}" class="styled-button" aria-label="Fazer Logout">
                 <i class="fas fa-sign-out-alt"></i> Logout
             </a>
         </div>
@@ -61,5 +62,11 @@
     particlesJS.load('particles-js', '{{ url_for("static", filename="particles-config.json") }}', function() {
         console.log('Partículas carregadas com sucesso!');
     });
+    // Tratamento de erro opcional
+    window.onerror = function(msg, url, line) {
+        if (msg.includes('particles-config.json')) {
+            console.error('Erro ao carregar o arquivo de configuração das partículas.');
+        }
+    };
 </script>
 {% endblock %}

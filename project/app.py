@@ -2,17 +2,19 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 from utils.database import create_database, register_user, fetch_credentials
 from datetime import timedelta
 import os
-import bcrypt  # Certifique-se de que o bcrypt esteja instalado e importado
+import bcrypt
 
 # Inicialização do aplicativo Flask
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "default_secret_key")
 app.permanent_session_lifetime = timedelta(minutes=30)
 
-# Configurações iniciais
-create_database()
+# Configurações de portas
+ASSISTENTE_PORT = os.getenv("ASSISTENTE_PORT", "8501")
+GPT_PORT = os.getenv("GPT_PORT", "8502")
+AGENT_PORT = os.getenv("AGENT_PORT", "8503")
 
-# Rota principal (redireciona para login se não autenticado)
+# Rota principal
 @app.route("/")
 def index():
     if "authenticated" not in session or not session["authenticated"]:
@@ -27,14 +29,16 @@ def login():
         password = request.form.get("password")
         credentials = fetch_credentials()
         user_data = credentials["usernames"].get(username)
-        if user_data and bcrypt.checkpw(password.encode(), user_data["password"].encode()):
-            session["authenticated"] = True
-            session["username"] = username
-            session["full_name"] = user_data["name"]
-            flash("Login realizado com sucesso!", "success")
-            return redirect(url_for("mode_selection"))
-        else:
-            flash("Credenciais inválidas!", "danger")
+        if user_data:
+            stored_password = user_data["password"] if isinstance(user_data["password"], bytes) else user_data["password"].encode()
+            if bcrypt.checkpw(password.encode(), stored_password):
+                session.permanent = True
+                session["authenticated"] = True
+                session["username"] = username
+                session["full_name"] = user_data["name"]
+                flash("Login realizado com sucesso!", "success")
+                return redirect(url_for("mode_selection"))
+        flash("Credenciais inválidas!", "danger")
     return render_template("login.html")
 
 # Rota de Logout
@@ -77,8 +81,7 @@ def chatbot_assistente():
     if not session.get("authenticated"):
         return redirect(url_for("login"))
     username = session.get("username")
-    # Redireciona para o app Streamlit st_chatbot_assistente.py rodando na porta 8501
-    streamlit_url = f"http://localhost:8501/?username={username}"
+    streamlit_url = f"http://localhost:{ASSISTENTE_PORT}/?username={username}"
     return redirect(streamlit_url)
 
 # Rota para o Chatbot GPT (Streamlit)
@@ -87,27 +90,23 @@ def chatbot_gpt():
     if not session.get("authenticated"):
         return redirect(url_for("login"))
     username = session.get("username")
-    # Redireciona para o app Streamlit st_chatbot_gpt.py rodando na porta 8502
-    streamlit_url = f"http://localhost:8502/?username={username}"
+    streamlit_url = f"http://localhost:{GPT_PORT}/?username={username}"
     return redirect(streamlit_url)
 
 # Rota para o Chatbot Agent (Streamlit)
-@app.route("/chatbot_cagent")
-def chatbot_coder():
+@app.route("/chatbot_agent")
+def chatbot_agent():
     if not session.get("authenticated"):
         return redirect(url_for("login"))
     username = session.get("username")
-    # Redireciona para o app Streamlit st_chatbot_agent.py rodando na porta 8502
-    streamlit_url = f"http://localhost:8503/?username={username}"
+    streamlit_url = f"http://localhost:{AGENT_PORT}/?username={username}"
     return redirect(streamlit_url)
 
-# Rota para a página de recuperação de senha
+# Rota para recuperação de senha
 @app.route("/forgot-password", methods=["GET", "POST"])
 def forgot_password():
     if request.method == "POST":
         email = request.form.get("email")
-        # Aqui você pode implementar a lógica para enviar um e-mail de recuperação
-        # Exemplo: verificar se o e-mail existe no banco de dados e enviar um link de redefinição
         flash("Um e-mail de recuperação foi enviado para o endereço fornecido.", "info")
         return redirect(url_for("login"))
     return render_template("forgot_password.html")
@@ -120,4 +119,5 @@ def add_header(response):
     return response
 
 if __name__ == "__main__":
+    create_database()  # Movido para evitar execução em imports
     app.run(debug=True)
