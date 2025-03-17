@@ -1,11 +1,15 @@
 Flask==2.3.3
 bcrypt==4.0.1
-langchain
-mysql-connector-python  # Para MySQL/MariaDB
-psycopg2-binary         # Para PostgreSQL
-pymongo                 # Para MongoDB
-sqlalchemy              # Para abstração de conexões SQL
+langchain                
+mysql-connector-python  
+psycopg2-binary         
+pymongo                 
+sqlalchemy              
 streamlit
 PyPDF2
 pandas 
 pymongo
+python-dotenv
+pyodbc
+seaborn
+matplotlib

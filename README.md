@@ -14,25 +14,26 @@ FlowMind AI é uma aplicação web que oferece dois modos de interação com mod
 chat_etheriumtech/
 project/
 │
-├── data/                      # onde fica o users.db
-├── app.py                     # Arquivo principal do Flask
-├── requirements.txt           # Dependências do projeto
-├── static/                    # Arquivos estáticos (CSS, JS, imagens, etc.)
-│   ├── styles.css             # Estilos CSS
-│   ├── particles.js           # Biblioteca particles.js
-│   └── particles-config.json  # Configuração das partículas
-├── templates/                 # Templates HTML
-│   ├── base.html              # Template base
-│   ├── login.html             # Página de login
-│   ├── register.html          # Página de registro
-│   ├── forgot_password.html 
-│   ├── mode_selection.html    # Página de seleção de modo
-│   ├── st_chatbot_assistente.py # Página do Modo Assistente
-│   └── st_chatbot_gpt.py       # Página do Modo GPT
-├── utils/                     # Utilitários
-│   ├── database.py            # Funções de banco de dados
-│   ├── helpers.py             # Funções auxiliares
-└── Dockerfile                 # Criar imagem
-└── docker-compose.yml         # Docker Compose
-└── README.md                  # Documentação do projeto
+├── data/                         # onde fica o users.db
+├── app.py                        # Arquivo principal do Flask
+├── requirements.txt              # Dependências do projeto
+├── static/                       # Arquivos estáticos (CSS, JS, imagens, etc.)
+│   ├── styles.css                # Estilos CSS
+│   ├── particles.js              # Biblioteca particles.js
+│   └── particles-config.json     # Configuração das partículas
+├── templates/                    # Templates HTML
+│   ├── base.html                 # Template base
+│   ├── login.html                # Página de login
+│   ├── register.html             # Página de registro
+│   ├── forgot_password.html      # Página de recuperar senha
+│   ├── mode_selection.html       # Página de seleção de modo
+│   ├── st_chatbot_assistente.py  # Página do Modo Assistente
+│   └── st_chatbot_gpt.py         # Página do Modo GPT
+|   └── st_chatbot_agent.py       # Página do Modo Agent
+├── utils/                        # Utilitários
+│   ├── database.py               # Funções de banco de dados
+│   ├── helpers.py                # Funções auxiliares
+└── Dockerfile                    # Criar imagem
+└── docker-compose.yml            # Docker Compose
+└── README.md                     # Documentação do projeto
 ```

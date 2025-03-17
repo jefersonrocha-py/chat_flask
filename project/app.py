@@ -91,13 +91,13 @@ def chatbot_gpt():
     streamlit_url = f"http://localhost:8502/?username={username}"
     return redirect(streamlit_url)
 
-# Rota para o Chatbot GPT (Streamlit)
-@app.route("/chatbot_coder")
+# Rota para o Chatbot Agent (Streamlit)
+@app.route("/chatbot_cagent")
 def chatbot_coder():
     if not session.get("authenticated"):
         return redirect(url_for("login"))
     username = session.get("username")
-    # Redireciona para o app Streamlit st_chatbot_gpt.py rodando na porta 8502
+    # Redireciona para o app Streamlit st_chatbot_agent.py rodando na porta 8502
     streamlit_url = f"http://localhost:8503/?username={username}"
     return redirect(streamlit_url)
 
