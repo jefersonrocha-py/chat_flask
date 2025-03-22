@@ -1,11 +1,25 @@
 import os
-import requests
-import logging
-import time
-import streamlit as st
-from dotenv import load_dotenv
 import json
+import time
+import logging
+import requests
+import streamlit as st
+import pandas as pd
+import plotly.express as px
+import matplotlib.pyplot as plt
+import seaborn as sns
+from dotenv import load_dotenv
 from langchain_community.chat_models import ChatOllama
+
+# Conexões com bancos de dados
+import mysql.connector
+import psycopg2
+from pymongo import MongoClient
+import pyodbc
+
+# Importa os módulos de prompts e schemas que separei para melhoria
+from prompts import *
+from schemas import *
 
 # Configuração de logging
 logging.basicConfig(
@@ -14,35 +28,43 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
-def show_error(message):
-    st.error(f"❌ Oops! Algo deu errado: {message}")
+def show_error(message: str) -> None:
+    """Exibe mensagem de erro na interface e registra no log."""
+    st.error(f"❌ Oops! Something went wrong: {message}")
     logging.error(message)
 
+# Carrega variáveis de ambiente
 load_dotenv()
 
-# Configuração do Ollama
+# Configuração do servidor Ollama
 OLLAMA_SERVER_URL = "http://localhost:11434"
 
-def check_backend_connection():
+def check_backend_connection(url: str = OLLAMA_SERVER_URL) -> bool:
+    """Verifica se o backend do Ollama está disponível."""
     try:
-        response = requests.get(f"{OLLAMA_SERVER_URL}/api/tags", timeout=5)
+        response = requests.get(url, timeout=5)
         return response.status_code == 200
     except Exception as e:
-        st.error(f"Erro ao conectar no backend do Ollama: {e}")
+        st.error(f"Error connecting to the Ollama backend: {e}")
         return False
 
 if not check_backend_connection():
-    st.error("Servidor Ollama não disponível. Inicie o servidor e tente novamente.")
+    st.error("Ollama server not available. Please start the server and try again.")
     st.stop()
 
-try:
-    chat_model = ChatOllama(base_url=OLLAMA_SERVER_URL, model="llama3.2:latest")
-except Exception as e:
-    show_error(f"Erro ao configurar o chat model: {e}")
-    st.stop()
+def initialize_chat_model() -> ChatOllama:
+    """Inicializa o modelo de chat do Ollama."""
+    try:
+        return ChatOllama(base_url=OLLAMA_SERVER_URL, model="llama3.2:latest")
+    except Exception as e:
+        show_error(f"Error initializing chat model: {e}")
+        st.stop()
 
-# CSS customizado (mantido conforme o original)
-st.markdown("""
+chat_model = initialize_chat_model()
+
+# CSS customizado e configurações de layout
+st.markdown(
+    """
     <style>
     .sidebar-footer {
         position: fixed;
@@ -58,8 +80,7 @@ st.markdown("""
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-bottom: 20px;
-        margin-top: 20px;
+        margin: 20px 0;
     }
     .avatar-initial {
         width: 60px;
@@ -142,10 +163,11 @@ st.markdown("""
         margin-bottom: 90px !important;
     }
     </style>
-    """, unsafe_allow_html=True)
+    """, unsafe_allow_html=True
+)
 
-# Botão de voltar na sidebar (mantido no final da sidebar)
-FLASK_ROUTE = "http://localhost:5000/mode_selection"
+# Botão de voltar na sidebar
+FLASK_ROUTE = "http://172.16.20.230:5000/mode_selection"
 st.sidebar.markdown(
     f"""
     <div class="sidebar-footer">
@@ -157,7 +179,7 @@ st.sidebar.markdown(
     unsafe_allow_html=True
 )
 
-# Obtém o username dos parâmetros da URL e define o avatar
+# Avatar do usuário
 query_params = st.query_params
 user_logged = query_params.get("username", ["Usuário"])[0]
 initial = user_logged[0].upper() if user_logged else "U"
@@ -170,118 +192,273 @@ st.sidebar.markdown(
     unsafe_allow_html=True
 )
 
-# Seleção de modo de operação na sidebar
+# Botão de voltar na sidebar
+FLASK_ROUTE = "http://172.16.20.230:5000/mode_selection"
+st.sidebar.markdown(
+    f"""
+    <div class="sidebar-footer">
+        <a href="{FLASK_ROUTE}" target="_self">
+            <button class="back-button">⬅️ Voltar</button>
+        </a>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+# Seleção de modo de operação
 st.sidebar.title("Mode Agent")
 agent_mode = st.sidebar.selectbox(
     "Modo de Operação:",
     options=["Educacional", "Pesquisa Web", "Análise"]
 )
 
-# Botão para limpar o histórico (opcional)
+# Botão para limpar o histórico de chat
 if st.sidebar.button("Limpar Histórico"):
     st.session_state["chat_messages"] = []
     st.success("Histórico limpo com sucesso!")
 
-# Uploader de áudio aparece somente para o modo Educacional
+# Uploader de áudio (apenas para modo Educacional)
 audio_text = None
 if agent_mode == "Educacional":
     audio_file = st.sidebar.file_uploader("Envie um arquivo de áudio (mp3, wav)", type=["mp3", "wav"])
     if audio_file is not None:
-        audio_text = "Áudio recebido para correção. (Simulação de transcrição)"
-        st.sidebar.info("Áudio recebido! Transcrição simulada disponível.")
+        audio_text = "Audio received for correction. (Simulated transcription)"
+        st.sidebar.info("Audio received! Simulated transcription available.")
 
-# Informações adicionais para cada modo
+# Informações adicionais por modo
 if agent_mode == "Educacional":
-    st.sidebar.info("Foco: Correção e Ensino de Inglês, Espanhol e Francês (áudio/texto).")
+    st.sidebar.info("Focus: Correction and teaching of English, Spanish, and French (audio/text).")
 elif agent_mode == "Pesquisa Web":
-    st.sidebar.info("Foco: Respostas fundamentadas e detalhadas com base na web.")
+    st.sidebar.info("Focus: Detailed, sourced answers based on web research.")
 elif agent_mode == "Análise":
-    st.sidebar.info("Foco: Resumir artigos, extrair insights de dados e analisar documentos.")
+    st.sidebar.info("Focus: Data extraction, summarization, and interpretation to generate insights and reports.")
 
-# Função para montar o prompt conforme o modo selecionado
-def get_prompt(query: str, mode: str, audio_info: str = None) -> str:
-    if mode == "Educacional":
-        prefix = (
-            "Você é um especialista educacional focado em ensinar e corrigir idiomas (Inglês, Espanhol e Francês). "
-            "Se o usuário enviar áudio, transcreva, corrija a pronúncia, identifique erros e forneça feedback detalhado, "
-            "incluindo dicas de gramática, vocabulário e pronúncia. Se o usuário enviar texto, corrija e sugira melhorias."
+# =============================================================================
+# FUNÇÕES DE CONEXÃO COM BANCO DE DADOS
+# =============================================================================
+def connect_mysql(host: str, port: str, user: str, password: str, database: str):
+    try:
+        return mysql.connector.connect(
+            host=host,
+            port=port,
+            user=user,
+            password=password,
+            database=database
         )
-    elif mode == "Pesquisa Web":
-        prefix = (
-            "Você é um agente de pesquisa especializado em fornecer respostas detalhadas e fundamentadas com base na web. "
-            "Forneça informações precisas, explique conceitos e, se necessário, cite fontes relevantes."
+    except Exception as e:
+        st.error("Error connecting to MySQL: " + str(e))
+        return None
+
+def connect_postgresql(host: str, port: str, user: str, password: str, database: str):
+    try:
+        return psycopg2.connect(
+            host=host,
+            port=port,
+            user=user,
+            password=password,
+            dbname=database
         )
-    elif mode == "Análise":
-        prefix = (
-            "Você é um agente de pesquisa e análise. Sua tarefa é resumir artigos, extrair insights de dados e analisar documentos. "
-            "Utilize conexões com APIs relevantes (como Google Scholar e PubMed) e processe PDFs, HTML ou textos longos para fornecer "
-            "resumos e insights detalhados."
+    except Exception as e:
+        st.error("Error connecting to PostgreSQL: " + str(e))
+        return None
+
+def connect_mongodb(host: str, port: str, user: str, password: str, database: str):
+    try:
+        uri = f"mongodb://{user}:{password}@{host}:{port}/{database}"
+        client = MongoClient(uri)
+        return client[database]
+    except Exception as e:
+        st.error("Error connecting to MongoDB: " + str(e))
+        return None
+
+def connect_sqlserver(host: str, port: str, user: str, password: str, database: str):
+    try:
+        conn_str = (
+            "DRIVER={ODBC Driver 17 for SQL Server};"
+            f"SERVER={host},{port};"
+            f"DATABASE={database};"
+            f"UID={user};"
+            f"PWD={password}"
         )
+        return pyodbc.connect(conn_str)
+    except Exception as e:
+        st.error("Error connecting to SQL Server: " + str(e))
+        return None
+
+def analyze_database(conn, db_type: str) -> dict:
+    analysis = {}
+    try:
+        if db_type in ["MySQL", "PostgreSQL", "SQL Server"]:
+            cursor = conn.cursor()
+            if db_type == "MySQL":
+                cursor.execute("SHOW TABLES")
+                for (table_name,) in cursor.fetchall():
+                    cursor.execute(f"DESCRIBE {table_name}")
+                    analysis[table_name] = {"columns": cursor.fetchall()}
+            elif db_type == "PostgreSQL":
+                cursor.execute("SELECT table_name FROM information_schema.tables WHERE table_schema='public'")
+                for (table_name,) in cursor.fetchall():
+                    cursor.execute(f"SELECT column_name, data_type FROM information_schema.columns WHERE table_name = '{table_name}'")
+                    analysis[table_name] = {"columns": cursor.fetchall()}
+            elif db_type == "SQL Server":
+                cursor.execute("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE='BASE TABLE'")
+                for (table_name,) in cursor.fetchall():
+                    cursor.execute(f"SELECT COLUMN_NAME, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{table_name}'")
+                    analysis[table_name] = {"columns": cursor.fetchall()}
+        elif db_type == "MongoDB":
+            for coll in conn.list_collection_names():
+                sample = conn[coll].find_one()
+                analysis[coll] = {"sample_document": sample}
+    except Exception as e:
+        st.error(f"Error analyzing the database: {e}")
+    return analysis
+
+# =============================================================================
+# CONEXÃO COM BANCO DE DADOS (Sidebar)
+# =============================================================================
+with st.sidebar.expander("Conexão com Banco de Dados"):
+    db_type = st.selectbox("Tipo de Banco", ["MySQL", "PostgreSQL", "MongoDB", "SQL Server"])
+    host = st.text_input("Host", value="localhost")
+    default_ports = {"MySQL": "3306", "PostgreSQL": "5432", "MongoDB": "27017", "SQL Server": "1433"}
+    port = st.text_input("Porta", value=default_ports[db_type])
+    username = st.text_input("Usuário")
+    password = st.text_input("Senha", type="password")
+    database = st.text_input("Database")
+
+    if st.button("Conectar Banco de Dados"):
+        connection = None
+        if db_type == "MySQL":
+            connection = connect_mysql(host, port, username, password, database)
+        elif db_type == "PostgreSQL":
+            connection = connect_postgresql(host, port, username, password, database)
+        elif db_type == "MongoDB":
+            connection = connect_mongodb(host, port, username, password, database)
+        elif db_type == "SQL Server":
+            connection = connect_sqlserver(host, port, username, password, database)
+
+        if connection:
+            st.success(f"Conexão com {db_type} realizada com sucesso!")
+            st.session_state["db_connection"] = connection
+            st.session_state["db_type"] = db_type
+            analysis_result = analyze_database(connection, db_type)
+            st.subheader("Análise do Banco de Dados:")
+            st.json(analysis_result)
+        else:
+            st.error("Falha na conexão com o banco de dados.")
+
+# =============================================================================
+# GERAÇÃO DE DASHBOARDS
+# =============================================================================
+def generate_dashboard_plotly(df: pd.DataFrame) -> None:
+    fig = px.bar(df, x=df.columns[0], y=df.columns[1], title="Dashboard Plotly")
+    st.plotly_chart(fig)
+
+def generate_dashboard_matplotlib(df: pd.DataFrame) -> None:
+    fig, ax = plt.subplots()
+    ax.bar(df[df.columns[0]], df[df.columns[1]])
+    ax.set_title("Dashboard Matplotlib")
+    st.pyplot(fig)
+
+def generate_dashboard_seaborn(df: pd.DataFrame) -> None:
+    fig, ax = plt.subplots()
+    sns.barplot(x=df.columns[0], y=df.columns[1], data=df, ax=ax)
+    ax.set_title("Dashboard Seaborn")
+    st.pyplot(fig)
+
+# Se o modo for "Análise" e o usuário solicitar "dashboard", processa a análise
+def process_dashboard_request(dashboard_lib: str) -> None:
+    if "db_connection" in st.session_state:
+        db_type = st.session_state.get("db_type")
+        connection = st.session_state.get("db_connection")
+        analysis_result = analyze_database(connection, db_type)
+        st.subheader("Dashboard from Data Analysis")
+        # Exemplo de conversão dos resultados da análise para DataFrame
+        if analysis_result:
+            df = pd.DataFrame({
+                "Category": list(analysis_result.keys()),
+                "Value": [len(str(val)) for val in analysis_result.values()]
+            })
+        else:
+            # DataFrame dummy se não houver análise
+            df = pd.DataFrame({
+                "Category": ["A", "B", "C", "D"],
+                "Value": [10, 20, 15, 30]
+            })
+        if dashboard_lib == "Plotly":
+            generate_dashboard_plotly(df)
+        elif dashboard_lib == "Matplotlib":
+            generate_dashboard_matplotlib(df)
+        elif dashboard_lib == "Seaborn":
+            generate_dashboard_seaborn(df)
     else:
-        prefix = ""
-    full_query = query if query else "[Áudio enviado]"
-    if audio_info:
-        full_query += f"\nÁudio: {audio_info}"
-    return f"{prefix}\nConsulta do usuário: {full_query}"
+        st.error("Nenhuma conexão de banco de dados encontrada para análise.")
 
-# Inicializa o histórico do chat na sessão, se ainda não existir
+# =============================================================================
+# INTERFACE DO CHAT
+# =============================================================================
 if "chat_messages" not in st.session_state:
     st.session_state["chat_messages"] = []
 
-st.markdown("<div class='chat-title'>FlowMind Agent AI🤖</div>", unsafe_allow_html=True)
-
-# Container para o histórico do chat (para atualização dinâmica)
+st.markdown("<div class='chat-title'>FlowMind Agent AI 🤖</div>", unsafe_allow_html=True)
 chat_container = st.container()
 
-def render_chat():
+def render_chat() -> None:
+    """Renderiza as mensagens de chat na interface."""
     with chat_container:
         for message in st.session_state["chat_messages"]:
             with st.chat_message(message["role"]):
                 st.markdown(message["content"])
 
-# Renderiza o histórico existente
-render_chat()
-
-# Entrada do usuário (texto)
-user_input = st.chat_input("Digite sua consulta:")
-
-# Se houver entrada do usuário ou áudio, processa a consulta
-if user_input or audio_text:
-    # Atualiza imediatamente o histórico com o prompt do usuário
+def process_user_input(user_input: str, audio_text: str = None) -> None:
+    """Processa a entrada do usuário, atualiza o chat e gera resposta do modelo."""
     combined_input = user_input if user_input else ""
     if audio_text:
         combined_input += f"\n{audio_text}"
     st.session_state["chat_messages"].append({"role": "user", "content": combined_input})
-    render_chat()  # Atualiza a exibição para mostrar a mensagem do usuário
+    render_chat()
+
+    # Se o modo for "Análise" e o input conter "dashboard", processa a requisição de dashboard
+    if agent_mode == "Análise" and "dashboard" in user_input.lower():
+        dashboard_lib = st.selectbox("Selecione a biblioteca para o Dashboard:", ["Plotly", "Matplotlib", "Seaborn"], key="dashboard_lib")
+        process_dashboard_request(dashboard_lib)
+        return
 
     prompt = get_prompt(user_input, agent_mode, audio_info=audio_text)
-    
-    # Para os modos de pesquisa (Pesquisa Web e Análise), utiliza spinner com contagem do tempo
     start_time = time.time()
     try:
-        with st.spinner("Gerando resposta..."):
+        with st.spinner("Generating response..."):
             response = chat_model.invoke(prompt).content
+            # Valida a resposta usando schemas (pode ser expandido conforme necessário)
+            if not validate_response(response):
+                response = "The response did not pass validation."
     except Exception as e:
-        show_error(f"Erro ao gerar resposta: {e}")
-        response = "Desculpe, ocorreu um erro ao gerar a resposta."
+        show_error(f"Error generating response: {e}")
+        response = "Sorry, an error occurred while generating the response."
     elapsed = time.time() - start_time
     if agent_mode in ["Pesquisa Web", "Análise"]:
-        st.success(f"Processamento concluído em {elapsed:.1f} segundos!")
-    
-    st.session_state["chat_messages"].append({"role": "assistant", "content": response})
-    render_chat()  # Atualiza novamente o histórico com a resposta
+        st.success(f"Processing completed in {elapsed:.1f} seconds!")
 
-# Função para salvar o histórico do chat (opcional)
-def save_history():
+    st.session_state["chat_messages"].append({"role": "assistant", "content": response})
+    render_chat()
+
+# Entrada do usuário via chat
+user_input = st.chat_input("Digite sua consulta:")
+if user_input or audio_text:
+    process_user_input(user_input, audio_text)
+
+def save_history() -> None:
+    """Salva o histórico do chat em um arquivo JSON."""
     try:
         with open("chatbot_agent_history.json", "w") as f:
             json.dump(st.session_state["chat_messages"], f)
     except Exception as e:
-        show_error(f"Erro ao salvar histórico: {e}")
+        show_error(f"Error saving chat history: {e}")
 
 save_history()
 
-# Footer customizado
+# =============================================================================
+# FOOTER CUSTOMIZADO
+# =============================================================================
 st.markdown(
     """
     <div class="custom-footer">

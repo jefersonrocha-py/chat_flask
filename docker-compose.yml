@@ -8,12 +8,21 @@ services:
       dockerfile: Dockerfile
     container_name: flask_streamlit_app
     ports:
-      - "5000:5000" # Porta do Flask
-      - "8501:8501" # Porta do Streamlit Assistente
-      - "8502:8502" # Porta do Streamlit GPT
+      - "5000:5000"   # Porta do Flask
+      - "8501:8501"   # Porta do Streamlit Assistente
+      - "8502:8502"   # Porta do Streamlit GPT
+      - "8503:8503"   # Porta do Streamlit Agent
     volumes:
       - ./project:/app # Monta o diretório do projeto no contêiner
       - ./project/data:/app/data # Volume persistente para o SQLite (users.db)
     environment:
       - FLASK_ENV=development
       - SECRET_KEY=your_secret_key_here
+      - STREAMLIT_SERVER_ADDRESS=0.0.0.0  # Definindo o endereço para 0.0.0.>
+
+networks:
+  web:
+    external: true
+
+
+## Apenas buildando direto na raiz do projeto, depois vou transformar em Docker Image##

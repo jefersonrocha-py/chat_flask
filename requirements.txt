@@ -13,3 +13,7 @@ python-dotenv
 pyodbc
 seaborn
 matplotlib
+pyodbc
+langgraph
+gunicorn
+waitress
